@@ -1,0 +1,16 @@
+<accordion>
+  <accordion-group is-open="isOpen">
+    <accordion-heading>
+      <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+      <span>&nbsp;</span>
+      <strong>
+        {{ useName && (name) || "Proof." }}
+      </strong>
+    </accordion-heading>
+    <div ng-transclude>
+    </div>
+    <span class="pull-right" style="font-size:200%">
+      &#x25a1;
+    </span>
+  </accordion-group>
+</accordion>

@@ -1,0 +1,296 @@
+\documentclass[11pt]{article}
+\usepackage{hyperref}
+\newcommand{\DiscoTeX}[1]{Disco\TeX}
+\newcommand{\ifdisco}[2]{#2}
+\begin{document}
+\tableofcontents
+This document is a basic test of \DiscoTeX{}'s functionality.
+Tests are organized according to the order given on \href{ftp://ftp.tex.ac.uk/tex-archive/info/latex2e-help-texinfo/latex2e.html}{this page}.
+\section{}%TODO
+\section{}%TODO
+\section{}%TODO
+\section{}%TODO
+\section{}%TODO
+\section{Layout} %TODO 
+\section{Sectioning}
+This entire \ifdisco{page}{document} is a test that sectioning and subsectioning works.
+The \verb|\paragraph| and \verb|subparagraph| commands have yet to be implemented.
+To see that \verb|\subsubsection| works,
+
+\subsubsection{Latin text}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor sodales nulla, vel vulputate ligula egestas vitae. Aliquam vitae tristique sem. Aenean egestas finibus eros et viverra. Sed eget finibus ex. Cras sodales efficitur diam, id ullamcorper turpis blandit id. Vestibulum lacus erat, iaculis in sapien vitae, pellentesque condimentum massa. Curabitur sed dui lectus. Maecenas leo purus, elementum quis tempor et, volutpat quis nunc. Vestibulum placerat, ex nec viverra mollis, orci quam elementum purus, eget iaculis lorem turpis a nisi. Aliquam viverra vulputate luctus.
+
+We can also have a subsection and then subsubsections
+
+\subsection{Lorem Ipsum}
+\subsubsection{Second paragaprh}
+Nulla non neque scelerisque, vestibulum velit eu, euismod tellus. Vivamus vulputate consequat leo, in sollicitudin mauris scelerisque in. Curabitur pharetra risus ac justo feugiat, nec maximus erat mollis. Donec et consequat est. Ut rhoncus diam vitae ex vulputate tristique. Ut tempus sit amet dolor nec sodales. Cras ornare, justo a pellentesque porttitor, lectus libero tempus tellus, ac gravida velit erat a erat. Phasellus nulla metus, porttitor eu felis vel, elementum vulputate nisl. Pellentesque in gravida metus, eu dictum tellus. Sed gravida, odio eu varius aliquet, urna mi laoreet lacus, at dapibus mauris nisi ac erat. Proin eget pretium odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+
+\subsubsection{Third paragraph}
+Suspendisse at nisi lectus. Curabitur finibus quam nunc, id tristique odio finibus nec. Curabitur ullamcorper, erat non pretium congue, purus nibh efficitur mauris, nec aliquet arcu nulla et eros. Vivamus rhoncus pharetra mollis. Fusce vitae justo egestas, ultrices sem eget, lobortis ipsum. Proin semper ligula quis elit tincidunt, ac mollis urna rutrum. Aenean metus mi, dapibus ac lectus ut, vestibulum vulputate risus. Quisque orci purus, tincidunt eget ullamcorper in, pellentesque sit amet nulla. Cras hendrerit felis in sollicitudin elementum. Maecenas varius massa vitae orci dapibus malesuada. Mauris sollicitudin lacus ante, at commodo nunc ullamcorper a. Sed accumsan enim tempus mi sagittis, vitae laoreet mauris tincidunt. Praesent orci felis, maximus eget feugiat sed, molestie et dui.
+
+\section{Cross references}\label{sec:xref}
+This section is Section \ref{sec:xref}.
+The previous sentence was implemented with labels and references.
+
+\section{Environments}
+\subsection{abstract}
+\begin{abstract}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor sodales nulla, vel vulputate ligula egestas vitae. Aliquam vitae tristique sem. Aenean egestas finibus eros et viverra. Sed eget finibus ex. Cras sodales efficitur diam, id ullamcorper turpis blandit id. Vestibulum lacus erat, iaculis in sapien vitae, pellentesque condimentum massa.
+
+Curabitur sed dui lectus. Maecenas leo purus, elementum quis tempor et, volutpat quis nunc. Vestibulum placerat, ex nec viverra mollis, orci quam elementum purus, eget iaculis lorem turpis a nisi. Aliquam viverra vulputate luctus.
+\end{abstract}
+
+\subsection{array}%TODO
+
+\subsection{center}
+\begin{center}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor sodales nulla, vel vulputate ligula egestas vitae. Aliquam vitae tristique sem. Aenean egestas finibus eros et viverra. Sed eget finibus ex. Cras sodales efficitur diam, id ullamcorper turpis blandit id. Vestibulum lacus erat, iaculis in sapien vitae, pellentesque condimentum massa.
+
+Curabitur sed dui lectus. Maecenas leo purus, elementum quis tempor et, volutpat quis nunc. Vestibulum placerat, ex nec viverra mollis, orci quam elementum purus, eget iaculis lorem turpis a nisi. Aliquam viverra vulputate luctus.
+\end{center}
+%TODO test \centering
+
+\subsection{description}
+\begin{description}
+    \item[First] First descrption item
+    \item[Second] Second description item
+    \item Unlabelled description item
+\end{description}
+
+\subsection{display math}%TODO
+
+\subsection{document}
+This entire \ifdisco{page}{document} is a test of the \emph{document} environment.
+
+\subsection{enumerate}
+\begin{enumerate}
+    \item First item
+    \item Second item
+        \begin{enumerate}
+            \item First of seconditem
+            \item Second of second item
+            \item Third of second item
+        \end{enumerate}
+
+    \item Third item
+\end{enumerate}
+
+\subsection{eqnarray}
+\begin{eqnarray}
+    a^2+b^2 &=& c^2\\
+    &<& (a+b)^2
+\end{eqnarray}
+
+\begin{eqnarray*}
+    a^2+b^2 &=& c^2\\
+    &<& (a+b)^2
+\end{eqnarray*}
+
+\subsection{equation}
+\begin{equation}
+    a^2+b^2 = c^2
+\end{equation}
+
+\subsection{figure}%TODO
+
+\subsection{filecontents}%TODO
+
+\subsection{flushleft}%TODO and \raggendright
+
+\subsection{flushright}%TODO and \raggedleft
+
+\subsection{itemize}
+\begin{itemize}
+    \item First item
+    \item Second item
+        \begin{itemize}
+            \item First of second item
+            \item Second of second item
+            \item Third of second item
+        \end{itemize}
+    \item Third item
+\end{itemize}
+
+\subsection{letter} %TODO
+
+\subsection{list} %TODO
+
+\subsection{math} %TODO
+
+\subsection{minipgae} %TODO
+
+\subsection{picture} %TODO
+
+\subsection{quotation}
+\begin{quotation}
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor sodales nulla, vel vulputate ligula egestas vitae. Aliquam vitae tristique sem. Aenean egestas finibus eros et viverra. Sed eget finibus ex. Cras sodales efficitur diam, id ullamcorper turpis blandit id. Vestibulum lacus erat, iaculis in sapien vitae, pellentesque condimentum massa.
+    
+    Curabitur sed dui lectus. Maecenas leo purus, elementum quis tempor et, volutpat quis nunc. Vestibulum placerat, ex nec viverra mollis, orci quam elementum purus, eget iaculis lorem turpis a nisi. Aliquam viverra vulputate luctus.
+\end{quotation}
+
+\subsection{quote}
+\begin{quote}
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor sodales nulla, vel vulputate ligula egestas vitae. Aliquam vitae tristique sem. Aenean egestas finibus eros et viverra. Sed eget finibus ex. Cras sodales efficitur diam, id ullamcorper turpis blandit id. Vestibulum lacus erat, iaculis in sapien vitae, pellentesque condimentum massa.
+    
+    Curabitur sed dui lectus. Maecenas leo purus, elementum quis tempor et, volutpat quis nunc. Vestibulum placerat, ex nec viverra mollis, orci quam elementum purus, eget iaculis lorem turpis a nisi. Aliquam viverra vulputate luctus.
+\end{quote}
+
+\subsection{tabbing} %TODO
+
+\subsection{table} %TODO
+
+\subsection{tabular}
+\begin{tabular}[h]{l|cr}
+    a & b & $x^2$\\\hline
+    this & is & sparta\\
+    1 & 2 & 3
+\end{tabular}
+
+%\begin{tabular*}{???}[h]{lcr}
+%    a & b & $x^2$\\
+%    this & is & sparta\\
+%    1 & 2 & 3
+%\end{tabular*} %TODO
+
+\subsection{thebibliography}%TODO
+%\begin{thebibliography}
+%        %\bibitem[abc]{citekey}
+%\end{thebibliography}
+
+\subsection{theorem} %TODO this doesn't compile without some packages
+%\begin{theorem}
+%    Every even integer greater than 2 can be expressed as the sum of two primes.
+%\end{theorem}
+
+\subsection{titlepage}
+The next page is a titlepage created with the \emph{titlepage} environment.
+\begin{titlepage}
+    This document was last edited \today.
+\end{titlepage}
+
+\subsection{verbatim}%Autotabbing in DiscoTeX need to be turned off for the verbatim env. FIXME
+\begin{verbatim}
+This is a verbatim             environment.
+I can put \LaTeX commands in it
+and
+
+newlines
+and they are read in exactly.
+\end{verbatim}
+
+We can also do the same stuff inline with the \verb|\verb| command.
+
+\subsection{verse}
+\begin{verse}
+    Roses are red\\
+    Violets are blue\\
+    This poem doesn't rhyme.
+\end{verse}
+
+
+\section{Line breaking}%TODO
+\section{Page breaking}%TODO
+\section{Footnotes}%TODO
+\section{Definitions}%TODO
+\section{Counters}%TODO
+\section{Lengths}%TODO
+\section{Making paragraphs}%TODO
+\section{Math formulas}%TODO
+\section{Modes}%TODO
+\section{Page styles}%TODO
+\section{Spaces}%TODO
+\section{Boxes}%TODO
+\section{Special insertions}
+\subsection{Reserved characters}
+The following characters are reserved and must be escaped:
+\begin{center}
+    \#, \$, \%, \&, \_, \{, \}
+\end{center}
+
+\subsection{Symbols}
+\begin{tabular}{rlrl}
+    \verb|\copyright| & \copyright{} &
+    \verb|\dag| or \verb|\textdagger| & \dag{} or \textdagger \\
+    \verb|\ddag| or \verb|\textdaggerdbl| & \ddag{} or \textdaggerdbl &
+    \verb|\LaTeX| & \LaTeX \\
+    \verb|\dots|, \verb|\ldots|, or \verb|textellipsis| & \dots, \ldots, or \textellipsis&
+    \verb|\lq| & \lq \\
+    \verb|\P| or \verb|textparagraph| & \P{} or \textparagraph &
+    \verb|\rq| & \rq \\
+    \verb|\S| & \S &
+    \verb|\TeX| & \TeX \\
+    \verb|\textasciicircum| & \textasciicircum &
+    \verb|\textasciitilde| & \textasciitilde \\
+    \verb|\textasteriskcentered| & \textasteriskcentered &
+    \verb|\textbar| & \textbar \\
+    \verb|\textbardbl| & \textbardbl &
+    \verb|\textbraceleft| & \textbraceleft \\
+    \verb|\textbraceright| & \textbraceright &
+    \verb|\textbullet| & \textbullet \\
+    \verb|\textdollar| or \verb|\$| & \textdollar{} or \$ &
+    \verb|\textemdash| & \textemdash \\
+    \verb|\textendash| & \textendash &
+    \verb|\textexclamdown| & \textexclamdown{} \\
+    \verb|\textgreater| & \textgreater &
+    \verb|\textless| & \textless \\
+    \verb|\textordfeminine| & \textordfeminine &
+    \verb|\textordmasculine| & \textordmasculine\\
+    \verb|\textquestiondown| & \textexclamdown{} &
+    \verb|\textquotedblleft| or \verb|``| & \textquotedblleft{} or ``\\
+    \verb|\textquotedblright| & \textquotedblright{} &
+    \verb|\textquoteleft| or \verb|`| & \textquoteleft{} or `\\
+    \verb|\textquoteright| or \verb|'| & \textquoteright{} or ' &
+    \verb|\textregistered| & \textregistered \\
+    \verb|texttrademark| & \texttrademark &
+    \verb|textunderscore| & \textunderscore\\
+    \verb|textvisiblespace| & \textvisiblespace
+\end{tabular}
+
+Other symbols that need to be tested more thoroughly are:
+
+\subsection{Circled characters} A single character as an argument to \verb|\textcircled{...}| produces ``\textcircled{a}.'' If multiple characters are given, it produces ``\textcircled{hello}.'' If no characters are given, it produces ``\textcircled{}.''
+
+    \subsection{Invisible}
+\DiscoTeX{} creates ligatures between characters such as ``fl'' or ``fi.'' Placing this command between these characters separates the ligatures, as in ``f\textcompwordmark l'' or ``f\textcompwordmark i.''
+%    \item[\verb|textcapitalwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF.
+%    \item[\verb|textascenderwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF.
+
+\subsection{Accents}
+In \TeX{} accents can be put on any character. If group is provided as an argument, only the first character should be accented.
+\begin{description}
+    \item[Grave] \`A\`a\`B\`b\`C\`c\`D\`d\`E\`e\`F\`f\`H\`h\`I\`i\`J\`j\`K\`k\`L\`l\`M\`m\`N\`n\`O\`o\`P\`p\`Q\`q\`R\`r\`S\`s\`T\`t\`U\`u\`V\`v\`W\`w\`X\`x\`Y\`y\`Z\`z \`{group}
+
+    \item[Acute] \'A\'a\'B\'b\'C\'c\'D\'d\'E\'e\'F\'f\'H\'h\'I\'i\'J\'j\'K\'k\'L\'l\'M\'m\'N\'n\'O\'o\'P\'p\'Q\'q\'R\'r\'S\'s\'T\'t\'U\'u\'V\'v\'W\'w\'X\'x\'Y\'y\'Z\'z \'{group}
+
+    \item[Circumflex]  \^A\^a\^B\^b\^C\^c\^D\^d\^E\^e\^F\^f\^H\^h\^I\^i\^J\^j\^K\^k\^L\^l\^M\^m\^N\^n\^O\^o\^P\^p\^Q\^q\^R\^r\^S\^s\^T\^t\^U\^u\^V\^v\^W\^w\^X\^x\^Y\^y\^Z\^z \^{group}
+
+    \item[Tilde]\~A\~a\~B\~b\~C\~c\~D\~d\~E\~e\~F\~f\~H\~h\~I\~i\~J\~j\~K\~k\~L\~l\~M\~m\~N\~n\~O\~o\~P\~p\~Q\~q\~R\~r\~S\~s\~T\~t\~U\~u\~V\~v\~W\~w\~X\~x\~Y\~y\~Z\~z\~{group}
+
+    \item[Macron]\=A\=a\=B\=b\=C\=c\=D\=d\=E\=e\=F\=f\=H\=h\=I\=i\=J\=j\=K\=k\=L\=l\=M\=m\=N\=n\=O\=o\=P\=p\=Q\=q\=R\=r\=S\=s\=T\=t\=U\=u\=V\=v\=W\=w\=X\=x\=Y\=y\=Z\=z\={group}
+
+    \item[Breve]  \u A\u a\u B\u b\u C\u c\u D\u d\u E\u e\u F\u f\u H\u h\u I\u i\u J\u j\u K\u k\u L\u l\u M\u m\u N\u n\u O\u o\u P\u p\u Q\u q\u R\u r\u S\u s\u T\u t\u U\u u\u V\u v\u W\u w\u X\u x\u Y\u y\u Z\u z \u {group}
+
+    \item[Dot above]  \.A\.a\.B\.b\.C\.c\.D\.d\.E\.e\.F\.f\.H\.h\.I\.i\.J\.j\.K\.k\.L\.l\.M\.m\.N\.n\.O\.o\.P\.p\.Q\.q\.R\.r\.S\.s\.T\.t\.U\.u\.V\.v\.W\.w\.X\.x\.Y\.y\.Z\.z \.{group}
+
+    \item[Umlaut]  \"A\"a\"B\"b\"C\"c\"D\"d\"E\"e\"F\"f\"H\"h\"I\"i\"J\"j\"K\"k\"L\"l\"M\"m\"N\"n\"O\"o\"P\"p\"Q\"q\"R\"r\"S\"s\"T\"t\"U\"u\"V\"v\"W\"w\"X\"x\"Y\"y\"Z\"z \"{group}
+
+    \item[Ring]  \r A\r a\r B\r b\r C\r c\r D\r d\r E\r e\r F\r f\r H\r h\r I\r i\r J\r j\r K\r k\r L\r l\r M\r m\r N\r n\r O\r o\r P\r p\r Q\r q\r R\r r\r S\r s\r T\r t\r U\r u\r V\r v\r W\r w\r X\r x\r Y\r y\r Z\r z \r{group}
+
+    \item[Double accent]  \H A\H a\H B\H b\H C\H c\H D\H d\H E\H e\H F\H f\H H\H h\H I\H i\H J\H j\H K\H k\H L\H l\H M\H m\H N\H n\H O\H o\H P\H p\H Q\H q\H R\H r\H S\H s\H T\H t\H U\H u\H V\H v\H W\H w\H X\H x\H Y\H y\H Z\H z \H{group}
+
+    \item[Caron]\v A\v a\v B\v b\v C\v c\v D\v d\v E\v e\v F\v f\v H\v h\v I\v i\v J\v j\v K\v k\v L\v l\v M\v m\v N\v n\v O\v o\v P\v p\v Q\v q\v R\v r\v S\v s\v T\v t\v U\v u\v V\v v\v W\v w\v X\v x\v Y\v y\v Z\v z\v {group}
+
+    \item[Dot below]  \d A\d a\d B\d b\d C\d c\d D\d d\d E\d e\d F\d f\d H\d h\d I\d i\d J\d j\d K\d k\d L\d l\d M\d m\d N\d n\d O\d o\d P\d p\d Q\d q\d R\d r\d S\d s\d T\d t\d U\d u\d V\d v\d W\d w\d X\d x\d Y\d y\d Z\d z \d{group}
+
+    \item[Cedilla]  \c A\c a\c B\c b\c C\c c\c D\c d\c E\c e\c F\c f\c H\c h\c I\c i\c J\c j\c K\c k\c L\c l\c M\c m\c N\c n\c O\c o\c P\c p\c Q\c q\c R\c r\c S\c s\c T\c t\c U\c u\c V\c v\c W\c w\c X\c x\c Y\c y\c Z\c z \c{group}
+
+    %\item[Ogonek]  \k A\k a\k B\k b\k C\k c\k D\k d\k E\k e\k F\k f\k H\k h\k I\k i\k J\k j\k K\k k\k L\k l\k M\k m\k N\k n\k O\k o\k P\k p\k Q\k q\k R\k r\k S\k s\k T\k t\k U\k u\k V\k v\k W\k w\k X\k x\k Y\k y\k Z\k z \k{group} % unsupported
+
+    \item[Bar under]  \b A\b a\b B\b b\b C\b c\b D\b d\b E\b e\b F\b f\b H\b h\b I\b i\b J\b j\b K\b k\b L\b l\b M\b m\b N\b n\b O\b o\b P\b p\b Q\b q\b R\b r\b S\b s\b T\b t\b U\b u\b V\b v\b W\b w\b X\b x\b Y\b y\b Z\b z \b{group}
+
+\end{description}
+
+\subsection{Non-english characters}
+\aa, \AA, \ae, \AE, \ij, \IJ, \l, \L, \o, \O, \oe, \OE, \ss, \SS
+\end{document}

@@ -1,0 +1,71 @@
+html {
+    margin-left:auto;
+    margin-right:auto;
+    text-align: justify;
+    text-justify: auto;
+    /*background-color: lightgrey;*/
+}
+
+dt-theoremlike.corollary > .panel-default > .panel-heading {
+    background-color: lightblue;
+}
+dt-theoremlike.definition > .panel-default > .panel-heading {
+    /* "a nice salmon color," said Josh */
+    background-color: lightgreen;
+}
+dt-theoremlike.lemma > .panel-default > .panel-heading {
+    background-color: lightblue;
+}
+dt-theoremlike.theorem > .panel-default > .panel-heading {
+    background-color: lightblue;
+}
+.bs-sidenav {
+  width: 250px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-top:    10px;
+  padding-bottom: 10px;
+  text-shadow: 0 1px 0 #fff;
+  background-color: #f7f5fa;
+  border-radius: 5px;
+}
+ul.bibliography {
+  list-style-type: none;
+}
+.cite-tooltip-wrapper {
+  position: relative;
+}
+.cite-tooltip {
+  position: absolute;
+  left:0px;
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  bottom: 16px;
+  min-width:350px;
+  max-width:600px;
+  padding: 10px;
+}
+code {
+  color: black;
+  background: lightgrey;
+}
+body, p, ul li, ol li, dl{
+    font-size: 12pt;
+    font-family: "Computer Modern Serif";
+    font-variant-ligatures: common-ligatures;
+}
+
+blockquote.indent > p{
+    text-indent: 2em;
+}
+
+.circled{
+    text-align: center;
+    display: inline-block;
+    border: 1px solid;
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+}

@@ -1,0 +1,10 @@
+<span ng-mouseenter="show()" ng-mouseleave="hide()"
+      class="cite-tooltip-wrapper">
+  <a href="#{{ label }}">
+  [{{ bd[label].tag }}]
+  </a>
+  <div class="cite-tooltip" ng-show="active">
+    <dt-bibitemhelper label="{{ label }}" bd="bd">
+    </dt-bibitemhelper>
+  </div>
+</span>

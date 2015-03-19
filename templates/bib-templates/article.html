@@ -1,0 +1,3 @@
+[{{ bd[label].tag }}] {{ bd[label].authors.join(', ') }},
+<a ng-if="bd[label].link" href="{{ bd[label].link }}">{{ bd[label].title }}</a><span ng-if="!(bd[label].link)">{{ bd[label].title }}</span>,
+{{ bd[label].journal }}.

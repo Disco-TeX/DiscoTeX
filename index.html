@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html ng-app="mathDocument">
+  <head>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <script type="text/javascript" src="js/angular.js"></script>
+
+    <script type="text/javascript" src="js/mathDoc.js"></script>
+    <script type="text/javascript" src="js/bibliography.js"></script>
+    <script type="text/javascript" src="js/equation.js"></script>
+    <script type="text/javascript" src="js/proof.js"></script>
+    <script type="text/javascript" src="js/reference.js"></script>
+    <script type="text/javascript" src="js/section.js"></script>
+    <script type="text/javascript" src="js/sidebar.js"></script>
+    <script type="text/javascript" src="js/theorem.js"></script>
+
+    <!-- MathJax stuff -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "AMS" } } });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured"></script>
+
+    <!-- Angular Bootstrap -->
+    <script src="js/ui-bootstrap-tpls-0.12.0.js"></script>
+
+    <!-- the stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body ng-controller="DocumentController as doc">
+
+    <dt-sidebar></dt-sidebar>
+
+    <!--Begin math content-->
+    <div class="col-md-6" role="main">
+      <h1>DiscoTeX Demo</h1>
+
+      <dt-section number="1" section-title="Introduction"></dt-section>
+
+      <p>
+      Mathematicians and other technical scientists
+      often write their papers in \(\LaTeX\).
+      The most common output format of a .tex source-file is PDF,
+      which can be shared easily via email and printed out into a physical copy.
+      While PDF excels as a format for physical documents,
+      the experience on a computer could be improved significantly.
+      Those who read on a tablet or computer
+      are aware of PDF's lack of interactive capabilities,
+      such as text reflow, navigation history or easy reference viewing.
+      </p>
+      <p>
+      By contrast,
+      modern web technologies allow us to display content custom to our needs.
+      DiscoTeX is an attempt to convert standard .tex files
+      into nice looking web-pages.
+      There are two parts to the project:
+      compiling a .tex file to a human-readable .html file,
+      and using javascript and css
+      (currently we are mostly using Angular),
+      to turn this html into an interactive web page.
+      This demo concerns only the latter part.
+      In the following sections,
+      demos of currently implemented features are displayed
+      for your consideration.
+      </p>
+      <p>
+      At the moment, this is mainly a proof-of-concept
+      and I wouldn't recommend actually trying to use it.
+      Still, you might find the philosophy interesting.
+      </p>
+
+      <dt-section number="2" section-title="Readability"></dt-section>
+
+      <p>
+      One of the priorities of DiscoTeX
+      is for the source HTML to be readable by a human.
+      That means div spam and other html spaghetti
+      should be hidden from the user as best as possible.
+      Currently, we use Angular to provide custom HTML tags
+      that make the source code look similar to that of \(\LaTeX\).
+      Try looking at the source for this page
+      (ctrl+u on most browsers).
+      </p>
+
+      <dt-section number="3" section-title="Equations and eqrefs">
+      </dt-section>
+
+      <p>
+      Equations are currently rendered using MathJax:
+      <dt-equation label="eq:euler" tag="\heartsuit">
+        e^{i\pi} = -1.
+      </dt-equation>
+      The <code>dt-equation</code> tag
+      can be used with label and tag attributes, or not.
+      At the current moment,
+      a labeled equation must have a tag as well
+      to work properly with references.
+      </p>
+      <p>
+      Equations can be referenced with the <code>dt-eqref</code> tag:
+      <dt-eqref label="eq:euler"></dt-eqref>.
+      Try clicking on the reference to see the magic.
+      </p>
+
+      <dt-section number="4" section-title="Bibliography and citations"></dt-section>
+
+      <p>
+      Currently bibliography items are stored in a JSON database.
+      You can place them in the <code>dt-bibliography</code> tag
+      with the <code>dt-bibitem</code> element.
+      </p>
+      <p>
+      The <code>dt-cite</code> element provides a clickable link
+      and a Wikipedia-style tooltip on mouseover.
+      For more information, refer to
+      <dt-cite label="wiki-reftooltip"></dt-cite>.
+      </p>
+      <p>
+      Additional examples:
+      <!-- <dt-cite label="nintendo-npc"></dt-cite> -->
+      <dt-cite label="oetiker-lshort"></dt-cite>.
+      </p>
+
+      <dt-section number="5" section-title="Theorem-like environments"></dt-section>
+
+      <p>
+      DiscoTeX allows for theorem panels via the
+      <code>dt-theoremlike</code> element,
+      which can be extended and customized:
+      </p>
+
+      <dt-theoremlike class="theorem" number="1" name="Lorem ipsum">
+        dolor sit amet equation
+        <dt-eqref label="eq:euler"></dt-eqref>
+        et fundamental theorem of calculus:
+
+        <dt-equation>
+          \int_a^b F'(t)dt = F(b)-F(a).
+        </dt-equation>
+
+      </dt-theoremlike>
+
+      <dt-theoremlike class="lemma" number="2">
+      </dt-theoremlike>
+
+      <dt-theoremlike class="definition" number="1" name="Consectetur">
+        adipiscing
+      </dt-theoremlike>
+
+      <dt-section number="6" section-title="Collapsible proofs"></dt-section>
+
+      <p>
+      Proofs can be written in the <code>dt-proof</code> tag.
+      The <code>collapsible</code> attribute
+      dictates whether a user can close the proof, or not.
+      If the proof is peripheral,
+      use the <code>start-collapsed</code> attribute
+      to set it to be hidden initially.
+      If the <code>name</code> attribute is set,
+      it uses that instead of "Proof."
+      Note that periods are not automatically added.
+      </p>
+
+      <dt-proof collapsible start-collapsed>
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+        accusantium doloremque laudantium, totam rem aperiam, eaque
+        ipsa quae ab illo inventore veritatis et quasi architecto
+        beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem
+        quia voluptas sit aspernatur aut odit aut fugit, sed quia
+        consequuntur magni dolores eos qui ratione voluptatem sequi
+        nesciunt.
+      </dt-proof>
+
+      <dt-proof collapsible name="Proof of Main Lemma">
+        Neque porro quisquam est, qui dolorem ipsum quia dolor sit
+        amet, consectetur, adipisci velit, sed quia non numquam eius
+        modi tempora incidunt ut labore et dolore magnam aliquam
+        quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+        exercitationem ullam corporis suscipit laboriosam, nisi ut
+        aliquid ex ea commodi consequatur? Quis autem vel eum iure
+        reprehenderit qui in ea voluptate velit esse quam nihil
+        molestiae consequatur, vel illum qui dolorem eum fugiat quo
+        voluptas nulla pariatur?
+      </dt-proof>
+
+      <dt-proof name="Proof of Riemann Hypothesis.">
+        This one is important, so people shouldn't collapse it.
+      </dt-proof>
+
+      <!--currently the bibliographic data is stored in json/bibItems.json-->
+      <dt-bibliography>
+        <!-- <dt-bibitem label="nintendo-npc"></dt-bibitem> -->
+        <dt-bibitem label="wiki-reftooltip"></dt-bibitem>
+        <dt-bibitem label="oetiker-lshort"></dt-bibitem>
+      </dt-bibliography>
+
+    </div>
+
+    <script type="text/javascript">
+      setTimeout(function(){MathJax.Hub.Configured();},2000);
+    </script>
+
+  </body>
+</html>

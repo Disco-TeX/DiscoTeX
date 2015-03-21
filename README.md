@@ -1,4 +1,4 @@
-# [<img src="https://disco-tex.github.io/discotex/logo.png" width="130" alt="DiscoTeX">](https://disco-tex.github.io/discotex/)
+# [<img src="https://disco-tex.github.io/DiscoTeX/logo.png" width="130" alt="DiscoTeX">](https://disco-tex.github.io/DiscoTeX/)
 
 #### What is it?
 DiscoTeX is suite of tools to display beautiful mathematical documents on the web.

@@ -1,6 +1,0 @@
-<div>
-  {{ useLabel && "\\begin{equation}\\label{"+label+"}" || "\\begin{equation*}" }}
-    {{ body }}
-    {{ useTag && "\\tag{\\("+tag+"\\)}" || "" }}
-  {{ useLabel && "\\end{equation}" || "\\end{equation*}" }}
-</div>

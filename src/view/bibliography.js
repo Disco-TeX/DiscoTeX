@@ -10,7 +10,7 @@
       if (bibPromise) {
         return bibPromise;
       } else {
-        bibPromise = $http.get('json/bibItems.json');
+        bibPromise = $http.get('src/view/json/bibItems.json');
         return bibPromise;
       }
     };

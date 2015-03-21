@@ -1,0 +1,11 @@
+<div class="col-md-3" role="complementary">
+  <div class="bs-sidebar hidden-print affix" data-spy="affix">
+    <ul class="nav bs-sidenav">
+      <li ng-repeat="sec in sections track by $index">
+        <a href="{{ '#section-'+sec.number }}">
+          {{ sec.title }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

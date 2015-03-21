@@ -14,7 +14,7 @@
          * other things. We'll pass in the string containing the TeX, as well
          * as a reference to the parsers state.
          */
-        this.stream = DT.TeXStream(tex, this.state);
+        this.stream = new DT.TeXStream(tex, this.state);
 
         /* Rather than logging compilation warnings and errors to the console,
          * we will keep track of them ourselves, so we can display them
@@ -45,21 +45,20 @@
         },
 
         getOptionalArgument: function(){
-            var nextTk = this.stream.next('repeat');
-            if(nextTk.value.token === '['){
+            var nextTk = this.stream.peek();
+            if(nextTk.token === '['){
                 //option provided but we didn't consume
                 //the '[', consume it now.
-                this.stream.next();
 
                 var opt = '';
-                while(nextTk.value.token !== ']'){
+                while(nextTk.token !== ']'){
                     nextTk = this.stream.next();
-                    opt += this.parseOne(nextTk.value, false);
+                    opt += this.parseOne(nextTk, false);
                 }
 
                 //opt will always end with a ]
                 //slice off the last character
-                return opt.slice(0, -1);
+                return opt.slice(1, -1);
             }
             else{
                 return undefined;
@@ -73,14 +72,14 @@
                     var nextTk = this.stream.next();
 
                     //This is a catch to ensure that enough arguments are provided
-                    if(typeof(nextTk.value) === 'undefined'){
+                    if(typeof(nextTk) === 'undefined'){
                         this.logError('Not enough arguments provided');
                         return; //this just escapes out of the forEach function call
                     }
 
                     //false takes the place of doParagraphCheck.
                     //FIXME is this always correct? I'm far from convinced.
-                    argList.push(this.parseOne(nextTk.value, false));
+                    argList.push(this.parseOne(nextTk, false));
                 }
                 else if(argType === 'O'){
                     argList.push(this.getOptionalArgument());
@@ -147,12 +146,12 @@
                 var genOut = {done: false};
                 while(!genOut.done){
                     var nextTk = this.stream.next();
-                    if(typeof(nextTk.value) === 'undefined'){
+                    if(typeof(nextTk) === 'undefined'){
                         this.logError('Not enough arguments provided');
                         return '';
                     }
 
-                    var np = this.parseOne(nextTk.value, false);
+                    var np = this.parseOne(nextTk, false);
 
                     genOut = gen.next(np);
                 }
@@ -226,9 +225,9 @@
             var output = '';
             var streamOutput = this.stream.next();
 
-            var tk = streamOutput.value;
+            var tk = streamOutput;
 
-            while(!streamOutput.done && (output.match(new RegExp(endCondition + '$')) === null)){
+            while((streamOutput !== null) && (output.match(new RegExp(endCondition + '$')) === null)){
                 if(tk.catcode === DT.CATCODE.ESC){
                     output += tk.leader + tk.token;
                 }
@@ -236,7 +235,7 @@
                     output += tk.token;
                 }
 
-                tk = this.stream.next().value;
+                tk = this.stream.next();
 
                 if(streamOutput.done){
                     this.logError('Read until end of stream without finding the end condition');
@@ -254,9 +253,9 @@
 
             var streamOutput = this.stream.next();
 
-            var tk = streamOutput.value;
+            var tk = streamOutput;
 
-            while(!streamOutput.done && tk.catcode !== DT.CATCODE.MATH_SHIFT){
+            while((streamOutput !== null) && tk.catcode !== DT.CATCODE.MATH_SHIFT){
                 if(tk.catcode === DT.CATCODE.ESC){
                     math += tk.leader + tk.token;
                 }
@@ -264,7 +263,7 @@
                     math += tk.token;
                 }
 
-                tk = this.stream.next().value;
+                tk = this.stream.next();
 
                 if(streamOutput.done){
                     this.logError('Read until end of stream without finding a matching math-shift token');
@@ -438,7 +437,8 @@
         parseAll: function(doParagraphCheck){
             var outputHTML = '';
             //run through all tokens in the stream
-            for(var tk of this.stream){
+            var tk = this.stream.next();
+            while(!this.stream.eof()){
                 var tokenOutput = this.parseOne(tk, doParagraphCheck);
                 if(typeof(tokenOutput.scopeFinished) === 'undefined'){
                     outputHTML += tokenOutput;
@@ -447,8 +447,9 @@
                     return outputHTML + tokenOutput.ending;
                 }
                 else{
-                    //WTF could there be?
+                    console.error('Sanity check: This should never happen');
                 }
+                tk = this.stream.next();
             }
 
             return outputHTML;

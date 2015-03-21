@@ -28,6 +28,7 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
 
 </head>
 <body ng-controller="DocumentController as doc">
+
 <dt-sidebar></dt-sidebar>
 <div class="col-md-6" role="main">
    <p>This document is a basic test of \(\mathrm{Disco\TeX}\)'s functionality.
@@ -157,7 +158,7 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
                <dt-subsection section-title="titlepage" number = "1"></dt-subsection>
                <p>The next page is a titlepage created with the <em>titlepage</em> environment.</p>
                <dt-titlepage>
-                  <p>This document was last edited March 14, 2015.</p>
+                  <p>This document was last edited March 21, 2015.</p>
                   </dt-titlepage>
                <dt-subsection section-title="verbatim" number = "1"></dt-subsection><!-- Autotabbing in DiscoTeX need to be turned off for the verbatim env. FIXME -->
                <pre>This is a verbatim             environment.
@@ -235,10 +236,10 @@ and they are read in exactly.</pre>
                               <code>\textordmasculine</code> </td><td> &ordm;</td></tr>
                         <tr><td>
                               <code>\textquestiondown</code> </td><td> &iexcl; </td><td>
-                              <code>\textquotedblleft</code> or <code>"</code> </td><td> &ldquo; or "</td></tr>
+                              <code>\textquotedblleft</code> or <code>``</code> </td><td> &ldquo; or ``</td></tr>
                         <tr><td>
                               <code>\textquotedblright</code> </td><td> &rdquo; </td><td>
-                              <code>\textquoteleft</code> or <code>'</code> </td><td> &lsquo; or '</td></tr>
+                              <code>\textquoteleft</code> or <code>`</code> </td><td> &lsquo; or `</td></tr>
                         <tr><td>
                               <code>\textquoteright</code> or <code>'</code> </td><td> &rsquo; or ' </td><td>
                               <code>\textregistered</code> </td><td> &reg;</td></tr>
@@ -249,9 +250,9 @@ and they are read in exactly.</pre>
                               <code>textvisiblespace</code> </td><td> &blank;
                               </td></tr></table>
                      <p>Other symbols that need to be tested more thoroughly are:</p>
-                     <dt-subsection section-title="Circled characters" number = "1"></dt-subsection> <p>A single character as an argument to <code>\textcircled{...}</code> produces "<span class="circled">a</span>.'' If multiple characters are given, it produces "<span class="circled">h</span>ello.'' If no characters are given, it produces "<span class="circled">&nbsp;</span>.''</p>
+                     <dt-subsection section-title="Circled characters" number = "1"></dt-subsection> <p>A single character as an argument to <code>\textcircled{...}</code> produces ``<span class="circled">a</span>.'' If multiple characters are given, it produces ``<span class="circled">h</span>ello.'' If no characters are given, it produces ``<span class="circled">&nbsp;</span>.''</p>
                      <dt-subsection section-title="Invisible" number = "1"></dt-subsection>
-                     <p>\(\mathrm{Disco\TeX}\) creates ligatures between characters such as "fl'' or "fi.'' Placing this command between these characters separates the ligatures, as in "f&#8291;l'' or "f&#8291;i.''
+                     <p>\(\mathrm{Disco\TeX}\) creates ligatures between characters such as ``fl'' or ``fi.'' Placing this command between these characters separates the ligatures, as in ``f&#8291;l'' or ``f&#8291;i.''
                         <!--     \item[\verb|textcapitalwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF. --></p>
                      <!--     \item[\verb|textascenderwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF. -->
                      <dt-subsection section-title="Accents" number = "1"></dt-subsection>

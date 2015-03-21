@@ -8,5 +8,6 @@ MathJax is great for displaying mathematical formulas, but it's primary purpose 
 There are two ways:
 * You can write HTML with our custom tags.
 * You can take your TeX file, and run it through the DiscoTeX compiler, to generate valid, beautiful HTML.
+
 #### Is it fast?
 Super fast.

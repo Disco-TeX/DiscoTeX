@@ -4,7 +4,7 @@
     };
 
     var accentBuilder = function(entityNumber){
-        return { args: ['N'],
+        return { args: 'N',
             fn: function(args){
                 if(args[0].length == 0){
                     return ''; //FIXME
@@ -14,7 +14,7 @@
         };
     };
 /*    var accentFunctionBuilder = function(htmlEntityName, characterOptions, charCode){
-        return { args: ['N'], fn: function(args){
+        return { args: 'N', fn: function(args){
             var ch = args[0][0];
             for(var i = 0; i < characterOptions.length; ++i){
                 if(ch === characterOptions[i]){
@@ -33,14 +33,14 @@
     };*/
 
     var spanClassBuilder = function(className){
-        return { args: ['N'], fn: function(args){
+        return { args: 'N', fn: function(args){
             return '<span class="' + className + '">' + args[0] + '</span>';
         } };
     };
 
 
     var setVariable = function(varName){
-        return { args: ['N'], fn: function(args){
+        return { args: 'N', fn: function(args){
             this.state.vars[varName] = args[0];
             return '';
         } };
@@ -55,7 +55,7 @@
     };
 
     var wrap = function(tag){
-        return { args: ['N'], fn: function(args){
+        return { args: 'N', fn: function(args){
             return '<' + tag + '>' + args[0] + '</' + tag + '>';
         } };
     };
@@ -84,49 +84,49 @@
         'texttt' : spanClassBuilder('dt-tt'),
         'textnormal' : spanClassBuilder('dt-normal'),
 
-        'bf' : { args: [],
+        'bf' : { args: '',
             fn: function(){
                 this.state.addDefer('</strong>');
                 return '<strong>';
             }
         },
 
-        'em' : { args: [],
+        'em' : { args: '',
             fn: function(){
                 this.state.addDefer('</em>');
                 return '<em>';
             }
         },
 
-        'rm' : { args: [],
+        'rm' : { args: '',
             fn: function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-rm">';
             }
         },
 
-        'sc' : { args: [],
+        'sc' : { args: '',
             fn: function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sc">';
             }
         },
 
-        'sf' : { args: [],
+        'sf' : { args: '',
             fn: function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sf">';
             }
         },
 
-        'sl' : { args: [],
+        'sl' : { args: '',
             fn: function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sl">';
             }
         },
 
-        'tt' : { args: [],
+        'tt' : { args: '',
             fn: function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-tt">';
@@ -134,7 +134,7 @@
         },
 
         /* Document classes (4) */
-        'documentclass' : { args: ['O', 'N'],
+        'documentclass' : { args: 'ON',
             fn: function(args){
                 var cls = DT.Classes[args[1]];
                 if(typeof(cls) === 'undefined'){
@@ -147,7 +147,7 @@
             }
         },
 
-        'usepackage' : { args: ['O', 'N'],//FIXME
+        'usepackage' : { args: 'ON',//FIXME
             fn: function(args){
                 //console.log('I need to load package "' + args[1] + '"' + (typeof(args[0]) === 'undefined' ? '' : ' with options ' + args[1]));
                 return '';
@@ -160,61 +160,61 @@
 
         /* Layout (6) */
         'onecolumn' : '', // This is intentionally ignored, because two-column layouts are not supported by DiscoTeX
-        'twocolumn' : { args: ['O'],
+        'twocolumn' : { args: 'O',
             fn: function(args){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'columnsep' : { args: [],
+        'columnsep' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'columnseprule' : { args: [],
+        'columnseprule' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'columnsepwidth' : { args: [],
+        'columnsepwidth' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'dbltopfraction' : { args: [],
+        'dbltopfraction' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'dblfloatpagefraction' : { args: [],
+        'dblfloatpagefraction' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'dblfloatsep' : { args: [],
+        'dblfloatsep' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'dbltextfloatsep' : { args: [],
+        'dbltextfloatsep' : { args: '',
             fn: function(){
                 this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
                 return '';
             }
         },
-        'flushbottom' : { args: [],
+        'flushbottom' : { args: '',
             fn: function(){
                 this.logWarning('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
-        'raggedbottom' : { args: [],
+        'raggedbottom' : { args: '',
             fn: function(){
                 this.logWarning('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
                 return '';
@@ -293,41 +293,41 @@
         },
 
         //FIXME Only in book/report classes
-        'part': { args: ['N'], fn: ignore() }, //FIXME
-        'chapter': { args: ['N'], fn: ignore() }, //FIXME
+        'part': { args: 'N', fn: ignore() }, //FIXME
+        'chapter': { args: 'N', fn: ignore() }, //FIXME
 
-        'paragraph': { args: ['N'], fn: ignore() }, //FIXME
-        'subparagraph': { args: ['N'], fn: ignore() }, //FIXME
+        'paragraph': { args: 'N', fn: ignore() }, //FIXME
+        'subparagraph': { args: 'N', fn: ignore() }, //FIXME
 
 
         /* Cross-references (8) */
-        'label' : { args: ['N'],
+        'label' : { args: 'N',
             fn: function(args){
                 this.state.registerLabel(args[0]);
                 return ''
             }
         },
-        'pageref' : { args: ['N'],
+        'pageref' : { args: 'N',
             fn: function(args){
                 this.logWarning('Page references are intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
 
-        'ref' : { args: ['N'],
+        'ref' : { args: 'N',
             fn: function(args){
                 return '<dt-ref label="' + args[0] + '"></dt-ref>';
             }
         },
 
-        'eqref' : { args: ['N'],
+        'eqref' : { args: 'N',
             fn: function(args){
                 return '<dt-eqref label="' + args[0] + '"></dt-eqref>';
             }
         },
 
         /* Environments (9) */
-        'begin': { args: ['N'],
+        'begin': { args: 'N',
             fn: function(args){
                 /* This function takes a single normal parameter representing
                  * the name of the environment to be begun. We then look at
@@ -374,7 +374,7 @@
                  * explained in determined the same way they are for any other
                  * command call.
                  */
-                var argList = this.getAllArguments(env.args || []);
+                var argList = this.getAllArguments('begin{' + args[0] + '}', env.args || '');
 
                 /* There are two ways we allow environments to be defined. First,
                  * and most common, is that the environment has a begin() function
@@ -414,7 +414,7 @@
             }
         },
 
-        'end' : { args: ['N'], //FIXME, also check for matching with \begin{...}
+        'end' : { args: 'N', //FIXME, also check for matching with \begin{...}
             fn: function(args){
                 var env = DT.getEnv(args[0]);
 
@@ -443,7 +443,7 @@
         },
 
         /* Line-breaking: (10) */
-        '\\' : { args: ['O'],
+        '\\' : { args: 'O',
             fn: function(args){
                 //FIXME need to read the asterisk version too, but the asterisk should be ignored anyway.
                 //console.log(args[0] + ' is the amount of space to include');
@@ -464,8 +464,8 @@
          */
         '-' : '', 'fussy' : '', 'sloppy' : '', 'hyphenation' : '', 
 
-        'linebreak' : { args: ['O'], fn: function(){ return '<br/>'; } },
-        'nolinebreak' : { args: ['O'], fn: ignore() }, //FIXME This may be worth ignoring
+        'linebreak' : { args: 'O', fn: function(){ return '<br/>'; } },
+        'nolinebreak' : { args: 'O', fn: ignore() }, //FIXME This may be worth ignoring
 
         /* Page breaking (11) */
 
@@ -477,7 +477,7 @@
         'nopagebreak' : '', // <-- irrelevant on web
 
         /* Footnotes (12) */
-        'footnote' : { args: ['O', 'N'],
+        'footnote' : { args: 'ON',
             fn: function(args){
                 if(typeof(args[0]) === 'undefined'){
                     return '<dt-footnote>' + args[1] + '</dt-footnote>';
@@ -486,8 +486,8 @@
             }
         },
 
-        'footnotemark' : { args: ['O'], fn: ignore() }, //FIXME
-        'footnotetext' : { args: ['O', 'N'], fn: ignore() }, //FIXME
+        'footnotemark' : { args: 'O', fn: ignore() }, //FIXME
+        'footnotetext' : { args: 'ON', fn: ignore() }, //FIXME
         'fnsymbol' : '', //FIXME
         'footnoterule' : '', //FIXME
         'footnotesep' : '', //FIXME
@@ -515,7 +515,7 @@
         /* Modes (18) ... nothing here */
 
         /* Page styles (19) */
-        'maketitle': {args: [], //FIXME redo this
+        'maketitle': {args: '', //FIXME redo this
             fn: function(){
                 var title = this.getVariable('title');
                 var author = this.getVariable('author');
@@ -544,9 +544,9 @@
         'title': setVariable('title'),
 
 
-        'pagenumbering' : { args: ['N'], fn: ignore() }, //FIXME
-        'pagestyle' : { args: ['N'], fn: ignore() }, //FIXME
-        'thispagestyle' : { args: ['N'], fn: ignore() }, //FIXME
+        'pagenumbering' : { args: 'N', fn: ignore() }, //FIXME
+        'pagestyle' : { args: 'N', fn: ignore() }, //FIXME
+        'thispagestyle' : { args: 'N', fn: ignore() }, //FIXME
 
         /* Spaces (20) */
         'hspace' : '', //FIXME
@@ -560,12 +560,12 @@
 
         /* Boxes (21) */
         'mbox' : '', //FIXME
-        'fbox' : { args: ['O', 'O', 'N'],
+        'fbox' : { args: 'OON',
             fn: function(args){
                 return '<span class="fbox">' + args[2] + '</span>';
             }
         },
-        'framebox' : { args: ['O', 'O', 'N'],
+        'framebox' : { args: 'OON',
             fn: function(args){
                 return '<span class="fbox">' + args[2] + '</span>';
             }
@@ -611,7 +611,7 @@
         'textbraceleft' : '{',
         'textbraceright' : '}',
         'textbullet' : '&bull;',
-        'textcircled' : { args: ['N'],
+        'textcircled' : { args: 'N',
             fn: function(args){
                 //FIXME this is not ideal, but for now it's good enough
                 return '<span class="circled">' + (args[0].length === 0 ? '&nbsp;' : args[0][0]) + '</span>' + args[0].slice(1);
@@ -666,8 +666,8 @@
         'ae' : '&aelig;',
         'IJ' : '&IJlig;',
         'ij' : '&ijlig;',
-        'l' : { args: ['N'], fn: function(){ return '&#321'; } },
-        'L' : { args: ['N'], fn: function(){ return '&#322'; } },
+        'l' : { args: 'N', fn: function(){ return '&#321'; } },
+        'L' : { args: 'N', fn: function(){ return '&#322'; } },
         'O' : '&Oslash;',
         'o' : '&oslash;',
         'OE' : '&OElig;',
@@ -676,13 +676,13 @@
         'SS' : 'SS',
 
         /* Rules (22.5 & 22.6) */
-        'rule' : { args: ['O', 'N', 'N'], //FIXME
+        'rule' : { args: 'ONN', //FIXME
             fn: function(){
                 return '<hr/>';
             }
         },
 
-        'today' : { args: [],
+        'today' : { args: '',
             fn: function(){
                 /* Returns the date the document was modified */
                 return this.state.lastModified.toLocaleString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
@@ -690,18 +690,18 @@
         },
 
         /* Splitting the input (23) */
-        'include' : { args: ['N'], fn: ignore() }, //FIXME
-        'includeonly' : { args: ['N'], fn: ignore() }, //FIXME
-        'input' : { args: ['N'], fn: ignore() }, //FIXME
+        'include' : { args: 'N', fn: ignore() }, //FIXME
+        'includeonly' : { args: 'N', fn: ignore() }, //FIXME
+        'input' : { args: 'N', fn: ignore() }, //FIXME
 
         /* Front/Back Matter (24) */
-        'addcontentsline' : { args: ['N', 'N', 'N'], fn: ignore() }, //FIXME
-        'addcontents' : { args: ['N', 'N'], fn: ignore() }, //FIXME
-        'glossary' : { args: ['N'], fn: ignore() }, //FIXME
+        'addcontentsline' : { args: 'NNN', fn: ignore() }, //FIXME
+        'addcontents' : { args: 'NN', fn: ignore() }, //FIXME
+        'glossary' : { args: 'N', fn: ignore() }, //FIXME
         'makeindex' : '', //FIXME
-        'index' : { args: ['N'], fn: ignore() }, //FIXME
-        'indexentry' : { args: ['N', 'N'], fn: ignore() }, //FIXME
-        'tableofcontents' : { args: [], fn: function(){ this.state.hasTOC = true; return ''; } },
+        'index' : { args: 'N', fn: ignore() }, //FIXME
+        'indexentry' : { args: 'NN', fn: ignore() }, //FIXME
+        'tableofcontents' : { args: '', fn: function(){ this.state.hasTOC = true; return ''; } },
 
             /* Letters (25) */ //FIXME
 
@@ -713,41 +713,41 @@
 
 
         /* Everything else */
-        'bibitem' : { args: ['N'],
+        'bibitem' : { args: 'N',
             fn: function(args){
                 return '<dt-bibitem label="' + args[0] + '"></dt-bibitem>';
             }
         },
 
-        'bibliographystyle': {args: ['N'], fn: ignore() }, //FIXME
+        'bibliographystyle': {args: 'N', fn: ignore() }, //FIXME
 
-        'caption' : { args: ['N'],
+        'caption' : { args: 'N',
             fn: function(args){
                 return '<p class="caption">' + args[0] + '</p>'
             }
         },
 
-        'centering' : { args: [],
+        'centering' : { args: '',
             fn: function(){
                 this.state.addDefer('</div>');
                 return '<div class="centering">';
             }
         },
 
-        'cite' : { args: ['N'],
+        'cite' : { args: 'N',
             fn: function(args){
                 return '<dt-cite label="' + args[0] + '"></dt-cite>'
             }
         },
 
 
-        'href' : { args: ['N', 'N'],
+        'href' : { args: 'NN',
             fn: function(args){
                 return '<a href="' + args[0] + '">' + args[1] + '</a>';
             }
         },
 
-        'includegraphics' : { args: ['O', 'N'],
+        'includegraphics' : { args: 'ON',
             fn: function(args){
                 //FIXME work with all options
 
@@ -765,7 +765,7 @@
             }
         },
 
-        'item' : { args: [],
+        'item' : { args: '',
             inParagraph: false,
             fn: function(){
                 var e = this.state.environmentStack[this.state.environmentStack.length - 1];
@@ -780,7 +780,7 @@
 
         'title' : setVariable('title'),
 
-        'url' : { args: ['N'],
+        'url' : { args: 'N',
             fn: function(args){
                 return '<a href="' + args[0] + '">' + args[0] + '</a>';
             }
@@ -874,14 +874,14 @@
          * They are provided by the DiscoTeX package.
          */
 
-        'dtcollapse' : { args: [],
+        'dtcollapse' : { args: '',
             fn: function(){
                 this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
                 return '';
             }
         },
         'dtnocollapse' : '',
-        'dtstartcollapsed' : { args: [],
+        'dtstartcollapsed' : { args: '',
             fn: function(){
                 this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
                 return '';
@@ -889,7 +889,7 @@
         },
         'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
         'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
-        'ifdisco' : { args: ['N', 'N'],
+        'ifdisco' : { args: 'NN',
             fn: function(args){
                 //FIXME make it so the second parameter's errors are ignored
                 //Maybe do this with a coroutine and suspending warning logs between the second parameter?
@@ -1080,7 +1080,7 @@
             },
 
             'tabular' : {
-                args: ['O','N'],
+                args: 'ON',
                 internalParagraphs: false,
                 begin: function(eid){
                     this.state.setEnvironmentData(eid, 'cmd', {'\\' : DT.getCmd('\\'), 'hline' : DT.getCmd('hline') });
@@ -1109,7 +1109,7 @@
                  * uses to deal with spacing. HTML makes spacing easier, so
                  * we simply read this argument and completely ignore it.
                  */
-                args: ['N'],
+                args: 'N',
                 internalParagraphs: false,
                 begin: function(eid, args){
                     return '<dt-bibliography>';
@@ -1121,7 +1121,7 @@
             },
 
             'titlepage' : {
-                args: [],
+                args: '',
                 begin: function(eid){
                     return '<dt-titlepage>';
                 },
@@ -1131,7 +1131,7 @@
             },
 
             'verse' : {
-                args: [],
+                args: '',
                 begin: function(eid){
                     return '<dt-verse>';
                 },

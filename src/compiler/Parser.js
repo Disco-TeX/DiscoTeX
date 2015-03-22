@@ -65,10 +65,11 @@
             }
         },
 
-        getAllArguments: function(args){
+        getAllArguments: function(cmdName, args){
             var argList = [];
-            args.forEach(function(argType){
-                if(argType === 'N'){
+            for(var i = 0; i < args.length; ++i){
+                argType = args[i];
+                if(argType === 'N' || argType === 'n'){
                     var nextTk = this.stream.next();
 
                     //This is a catch to ensure that enough arguments are provided
@@ -81,7 +82,7 @@
                     //FIXME is this always correct? I'm far from convinced.
                     argList.push(this.parseOne(nextTk, false));
                 }
-                else if(argType === 'O'){
+                else if(argType === 'O' || argType === 'o'){
                     argList.push(this.getOptionalArgument());
                 }
                 else{
@@ -90,11 +91,11 @@
                      * problem with TeX, but with the provided package. As for error  recovery, we
                      * supply this argument as the empty string.
                      */
-                    console.error('Invalid argument type "' + argType + '" found in command named "' + tk.token + '".');
+                    console.error('Invalid argument type "' + argType + '" found in command named "' + cmdName + '".');
                     argList.push('');
                     return;
                 }
-            }, this);
+            }
             return argList;
         },
 
@@ -119,20 +120,20 @@
             }
 
             /* Take a look at the provided arguments. These can come in one
-             * of two flavors. Either, it is an array of characters ('N' or
-             * 'O'), or it is a function generator.
+             * of two flavors. Either, it is a string of characters ('N' or
+             * 'O'), or it is a function.
              */
             var args = cmd.args;
             var argList = [];
 
-            if(typeof(args) === 'object'){
+            if(typeof(args) === 'string'){
                 /* In the first case, the character 'N' dictates that an argument
                  * should be read normally. The 'O' dictates that the argument is
                  * optional. If it exists, it must be surrounded by square brackets
                  * These arguments are read in and supplied to the argList variable
                  * for later use by the command.
                  */
-                argList = this.getAllArguments(args);
+                argList = this.getAllArguments(tk.token, args);
             }
             else if(typeof(args) === 'function' && args.constructor.name === 'GeneratorFunction'){
                 /* If the command arguments is a function generator, we delegate

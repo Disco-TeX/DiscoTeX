@@ -32,6 +32,32 @@
         } };
     };*/
 
+   var translateDistance = function(dist){
+       var unit = dist.match(/[^\d]+/)[0];
+       var num = parseInt(dist);
+
+       if(unit === 'em' || unit === 'ex'){
+           return num.toString() + unit;
+       }
+      
+       /* fixed widths. convert them all to 'pt' */
+       if(unit === 'pt'){ /* do nothing */ }
+       else if(unit === 'mm'){ num *= 2.84; }
+       else if(unit === 'cm'){ num *= 28.4; }
+       else if(unit === 'in'){ num *= 72.27; }
+       else if(unit === 'bp'){ num *= 1.00375; }
+       else if(unit === 'pc'){ num *= 12; }
+       else if(unit === 'dd'){ num *= 1.07; }
+       else if(unit === 'cc'){ num *= 12.84; }
+       else if(unit === 'sp'){ num *= 0.000015; }
+       else{
+           this.logError('"' + unit + '" is not a valid LaTeX unit.');
+           return '1pt';
+       }
+
+       return num.toString() + 'pt';
+   };
+
     var spanClassBuilder = function(className){
         return { args: 'N', fn: function(args){
             return '<span class="' + className + '">' + args[0] + '</span>';
@@ -210,13 +236,13 @@
         },
         'flushbottom' : { args: '',
             fn: function(){
-                this.logWarning('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
+                this.logWarning('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
         'raggedbottom' : { args: '',
             fn: function(){
-                this.logWarning('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
+                this.logWarning('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
@@ -306,7 +332,7 @@
         },
         'pageref' : { args: 'N',
             fn: function(args){
-                this.logWarning('Page references are intentionally not supported by DiscoTeX. Consider wrapping wrapping this in an "ifdisco" command.');
+                this.logWarning('Page references are intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
@@ -411,12 +437,17 @@
             }
         },
 
-        'end' : { args: 'N', //FIXME, also check for matching with \begin{...}
+        'end' : { args: 'N',
             fn: function(args){
                 var env = DT.getEnv(args[0]);
 
+
                 //listing environments
                 var e = this.state.environmentStack.pop();
+
+                if(e.name !== args[0]){
+                    this.logError('You attempted to end a "' + args[0] + '" environment, but the current top-level environment is "' + e.name + '".');
+                }
 
                 //FIXME
                 if(env.internalParagraphs === false){
@@ -440,15 +471,23 @@
         },
 
         /* Line-breaking: (10) */
-        '\\' : { args: 'O',
-            fn: function(args){
-                //FIXME need to read the asterisk version too, but the asterisk should be ignored anyway.
-                //console.log(args[0] + ' is the amount of space to include');
+        '\\' : {
+            args: function(){
+                /* The asterisk tells LaTeX not to start a new page
+                 * on the PDF, so we ignore it. We don't even send
+                 * it to the command function.
+                 */
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
 
+                return [this.getOptionalArgument()];
+                           },
+            fn: function(args){
                 if(typeof(args[0]) === 'undefined'){
                     return '<br/>';
                 }
-                return '\n<br/>'; //FIXME use the optional argument to make this work correctly
+                return '<div style="height:' + translateDistance(args[0]) + ';"></div>';
             }
         },
         'obeycr' : '', //FIXME

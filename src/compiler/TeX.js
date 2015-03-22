@@ -789,7 +789,7 @@
                 //set to default
                 this.state.resetCatcodes();
                 //then make everything a letter
-                this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%'], DT.CATCODE.LETTER);
+                this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%', '`', '\'', '"', '[', ']'], DT.CATCODE.LETTER);
 
                 var args = [];
                 var nextArg = '';

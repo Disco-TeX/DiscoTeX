@@ -14,7 +14,7 @@
          * other things. We'll pass in the string containing the TeX, as well
          * as a reference to the parsers state.
          */
-        this.stream = DT.TeXStream(tex, this.state);
+        this.stream = new DT.TeXStream(tex, this.state);
 
         /* Rather than logging compilation warnings and errors to the console,
          * we will keep track of them ourselves, so we can display them
@@ -45,44 +45,52 @@
         },
 
         getOptionalArgument: function(){
-            var nextTk = this.stream.next('repeat');
-            if(nextTk.value.token === '['){
+            var nextTk = this.stream.peek();
+            if(nextTk.token === '['){
                 //option provided but we didn't consume
                 //the '[', consume it now.
-                this.stream.next();
 
                 var opt = '';
-                while(nextTk.value.token !== ']'){
+                while(nextTk.token !== ']'){
                     nextTk = this.stream.next();
-                    opt += this.parseOne(nextTk.value, false);
+                    opt += this.parseOne(nextTk, false);
                 }
 
                 //opt will always end with a ]
                 //slice off the last character
-                return opt.slice(0, -1);
+                return opt.slice(1, -1);
             }
             else{
                 return undefined;
             }
         },
 
-        getAllArguments: function(args){
-            var argList = [];
-            args.forEach(function(argType){
-                if(argType === 'N'){
-                    var nextTk = this.stream.next();
+        getNormalArgument: function(){
+            var nextTk = this.stream.next();
+            if(typeof(nextTk) === 'undefined'){
+                this.logError('Not enough arguments provided');
+                return null;
+            }
 
-                    //This is a catch to ensure that enough arguments are provided
-                    if(typeof(nextTk.value) === 'undefined'){
-                        this.logError('Not enough arguments provided');
-                        return; //this just escapes out of the forEach function call
+            return this.parseOne(nextTk, false)
+        },
+
+        getAllArguments: function(cmdName, args){
+            var argList = [];
+
+            for(var i = 0; i < args.length; ++i){
+                argType = args[i];
+                if(argType === 'N' || argType === 'n'){
+                    var normalArg = this.getNormalArgument();
+                    if(normalArg === null){
+                        break;
                     }
 
                     //false takes the place of doParagraphCheck.
                     //FIXME is this always correct? I'm far from convinced.
-                    argList.push(this.parseOne(nextTk.value, false));
+                    argList.push(normalArg);
                 }
-                else if(argType === 'O'){
+                else if(argType === 'O' || argType === 'o'){
                     argList.push(this.getOptionalArgument());
                 }
                 else{
@@ -91,11 +99,11 @@
                      * problem with TeX, but with the provided package. As for error  recovery, we
                      * supply this argument as the empty string.
                      */
-                    console.error('Invalid argument type "' + argType + '" found in command named "' + tk.token + '".');
+                    console.error('Invalid argument type "' + argType + '" found in command named "' + cmdName + '".');
                     argList.push('');
                     return;
                 }
-            }, this);
+            }
             return argList;
         },
 
@@ -120,82 +128,55 @@
             }
 
             /* Take a look at the provided arguments. These can come in one
-             * of two flavors. Either, it is an array of characters ('N' or
-             * 'O'), or it is a function generator.
+             * of two flavors. Either, it is a string of characters ('N' or
+             * 'O'), or it is a function.
              */
             var args = cmd.args;
             var argList = [];
 
-            if(typeof(args) === 'object'){
+            if(typeof(args) === 'string'){
                 /* In the first case, the character 'N' dictates that an argument
                  * should be read normally. The 'O' dictates that the argument is
                  * optional. If it exists, it must be surrounded by square brackets
                  * These arguments are read in and supplied to the argList variable
                  * for later use by the command.
                  */
-                argList = this.getAllArguments(args);
+                argList = this.getAllArguments(tk.token, args);
             }
-            else if(typeof(args) === 'function' && args.constructor.name === 'GeneratorFunction'){
-                /* If the command arguments is a function generator, we delegate
-                 * the responsibility of filling argList to the generator. We loop
-                 * through calling .next() on it until it returns the argList.
+            else if(typeof(args) === 'function'){
+                /* If the command arguments is a function, we delegate the
+                 * responsibility of filling argList to it.
                  */
-
-                var gen = args.call(this);
-                gen.next();//setup. the first value sent in will be discarded.
-
-                var genOut = {done: false};
-                while(!genOut.done){
-                    var nextTk = this.stream.next();
-                    if(typeof(nextTk.value) === 'undefined'){
-                        this.logError('Not enough arguments provided');
-                        return '';
-                    }
-
-                    var np = this.parseOne(nextTk.value, false);
-
-                    genOut = gen.next(np);
-                }
-
-                argList = genOut.value;
+                argList = args.call(this);
             }
             else{
-                /* If you're code gets to this section, the user did not provide a valid argument
-                 * option (either an array, or a function generator). We log the error on the
-                 * console, because it's not a problem with the provided TeX, but with the provided
-                 * package. As for error recovery, we supply an empty argument list.
+                /* If you're code gets to this section, the user did not provide a
+                 * valid argument option (either a string , or a function). We log
+                 * the error on the console, because it's not a problem with the
+                 * provided TeX, but with the provided package. As for error recovery,
+                 * we supply an empty argument list.
                  */
                 console.error('The provided argument parameter for the command "' + tk.token + '" is not allowed.');
                 argList = [];
             }
 
-            /* Now that all of the arguments have been read and assigned to the argList variable
-             * we are ready to send them to the command. The command may be either a function, or
-             * a function generator. Some constructions are simple, and essentially boil down to
+            /* Now that all of the arguments have been read and assigned to the argList
+             * variable we are ready to send them to the command. The command must be a
+             * function. Some constructions are simple, and essentially boil down to
              * building a string from some formatting of the arguments. These are typically
-             * defined with functions. Others do complicated things with the state of the parser.
-             * Some need to send data and then afterwards make changes to the state. We use
-             * function generators for these.
+             * defined with functions. Others do complicated things with the state of the
+             * parser. Some need to send data and then afterwards make changes to the state.
+             * We use function generators for these.
              */
 
             var output = '';
-            if(cmd.fn.constructor.name === 'GeneratorFunction'){
-                /* There's something strange going on here, and I don't know what
-                 * Deal with it later
-                 */
-                var gen = cmd.fn.call(this, argList);
-                for(var x of gen){
-                    output += x;
-                }
-                return output;
-            }
-            else if(typeof(cmd.fn) === 'function'){
+            if(typeof(cmd.fn) === 'function'){
                 output = cmd.fn.call(this, argList);
             }
             else{
-                /* If you're code gets to this section, the user provided neither a funciton nor
-                 * a function generator. This should be an error logged in the console. As for
-                 * error recovery, the command and its parameters are ignored.
+                /* If you're code gets to this section, the user provided not a funciton.
+                 * This should be an error logged in the console. As for error recovery,
+                 * the command and its parameters are ignored.
                  */
                 console.error('The provided function parameter for the command "' + tk.token + '" is not a function.');
                 output = '';
@@ -226,9 +207,9 @@
             var output = '';
             var streamOutput = this.stream.next();
 
-            var tk = streamOutput.value;
+            var tk = streamOutput;
 
-            while(!streamOutput.done && (output.match(new RegExp(endCondition + '$')) === null)){
+            while((streamOutput !== null) && (output.match(new RegExp(endCondition + '$')) === null)){
                 if(tk.catcode === DT.CATCODE.ESC){
                     output += tk.leader + tk.token;
                 }
@@ -236,7 +217,7 @@
                     output += tk.token;
                 }
 
-                tk = this.stream.next().value;
+                tk = this.stream.next();
 
                 if(streamOutput.done){
                     this.logError('Read until end of stream without finding the end condition');
@@ -254,9 +235,9 @@
 
             var streamOutput = this.stream.next();
 
-            var tk = streamOutput.value;
+            var tk = streamOutput;
 
-            while(!streamOutput.done && tk.catcode !== DT.CATCODE.MATH_SHIFT){
+            while((streamOutput !== null) && tk.catcode !== DT.CATCODE.MATH_SHIFT){
                 if(tk.catcode === DT.CATCODE.ESC){
                     math += tk.leader + tk.token;
                 }
@@ -264,7 +245,7 @@
                     math += tk.token;
                 }
 
-                tk = this.stream.next().value;
+                tk = this.stream.next();
 
                 if(streamOutput.done){
                     this.logError('Read until end of stream without finding a matching math-shift token');
@@ -438,7 +419,8 @@
         parseAll: function(doParagraphCheck){
             var outputHTML = '';
             //run through all tokens in the stream
-            for(var tk of this.stream){
+            var tk = this.stream.next();
+            while(!this.stream.eof()){
                 var tokenOutput = this.parseOne(tk, doParagraphCheck);
                 if(typeof(tokenOutput.scopeFinished) === 'undefined'){
                     outputHTML += tokenOutput;
@@ -447,8 +429,9 @@
                     return outputHTML + tokenOutput.ending;
                 }
                 else{
-                    //WTF could there be?
+                    console.error('Sanity check: This should never happen');
                 }
+                tk = this.stream.next();
             }
 
             return outputHTML;

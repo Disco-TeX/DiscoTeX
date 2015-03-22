@@ -1,8 +1,8 @@
 (function(DT){
     /* TeXStream
      *
-     * This is a function generator which is used to access tokens.
-     * To instantiate it, it takes in the following parameters:
+     * This object is used to get tokens from the TeX input. To
+     * instantiate it, it takes in the following parameters:
      *
      * tex    -  A string representing the tex of the TeX file to be
      *           compiled.
@@ -12,160 +12,118 @@
      *           such as the catcode database. This data is used to
      *           determine what constitutes the next token, what should
      *           be ignored, etc.
-     *
-     * To use this function generator after it has been initialized,
-     * you simply call .next(), and it will return the next token.
-     * You can also provide an argument the argument "repeat", as in
-     * stream.next("repeat"), and the index will not be incremented.
-     * This is a peek at the next token.
      */
-    DT.TeXStream = function*(tex, state){
-        var index = 0;
-        var passback;
-        var oldIndex = 0;
-        while(index < tex.length){
-            var ch = tex[index];
-            var cat = state.catcode(ch);
-            var toYield = '';
+    DT.TeXStream = function(tex, state){
+        this.index = -1; //points to the last character to be read in. thus, it starts pointing before the stream
+        this.tex = tex;
+        this.state = state;
+    };
+
+    DT.TeXStream.prototype = {
+        peek: function(){
+            if(this.eof()){
+                return null;
+            }
+
+            var oldIndex = this.index;
+            var token = this.next();
+            this.index  = oldIndex;
+            return token;
+        },
+
+        next: function(){
+            if(this.eof()){
+                return null;
+            }
+
+            var ch = this.tex[++this.index];
+            var cat = this.state.catcode(ch);
 
             if(cat === DT.CATCODE.ESC){
                 //read 1 non-letter, or a bunch of letters,
                 //followed by any number of spaces, to be thrown away
-                //(FIXME need to do this last part)
 
-                var nextChar = tex[++index];
+                var nextChar = this.tex[++this.index];
 
                 //take care of the case where the escape is the last
                 //character in the document.
                 if(typeof(nextChar) === 'undefined'){
-                    return {leader: ch, token: '', catcode: cat};
+                    return { leader: ch, token: '', catcode: cat };
                 }
 
-                if(state.catcode(nextChar) !== DT.CATCODE.LETTER){
+                if(this.state.catcode(nextChar) !== DT.CATCODE.LETTER){
                     //ignore whitespace following a command
-                    while(index < tex.length - 1 && state.catcode(tex[index + 1]) === DT.CATCODE.SPACE){
-                        ++index;
+                    while(this.index < this.tex.length - 1 && this.state.catcode(this.tex[this.index + 1]) === DT.CATCODE.SPACE){
+                        ++this.index;
                     }
 
-                    toYield = { leader: ch, token: nextChar, catcode: DT.CATCODE.ESC };
+                    return { leader: ch, token: nextChar, catcode: DT.CATCODE.ESC };
                 }
                 else{
                     //otherwise, it starts with a letter
                     var tk = '';
-                    while( index < tex.length && state.catcode(tex[index]) === DT.CATCODE.LETTER){
-                        tk += tex[index];
-                        ++index;
+                    while( this.index < this.tex.length && this.state.catcode(this.tex[this.index]) === DT.CATCODE.LETTER){
+                        tk += this.tex[this.index];
+                        ++this.index;
                     }
-                    //index is currently set to the very first non-letter token
+                    //index is now set to the very first non-letter token
 
                     //ignore whitespace following a command
-                    while(index < tex.length - 1 && state.catcode(tex[index]) === DT.CATCODE.SPACE){
-                        ++index;
+                    while(this.index < this.tex.length - 1 && this.state.catcode(this.tex[this.index]) === DT.CATCODE.SPACE){
+                        ++this.index;
                     }
 
                     //we're pointing to the start of the next token already.
                     //because we call ++index at the bottom of this loop iteration
                     //we need to subtract 1 from index to avoid skipping over something
-                    --index;
+                    --this.index;
 
-                    toYield = {leader: ch, token: tk, catcode: DT.CATCODE.ESC};
+                    return {leader: ch, token: tk, catcode: DT.CATCODE.ESC};
+
                 }
             }
             else if(cat === DT.CATCODE.IGNORED){
-                continue; //I can do this because I'm using a generator. Hooray!
+                return this.next();
             }
             else if(cat === DT.CATCODE.OTHER){
-                var tk = tex[index];
-                if(tk === '<'){
-                    toYield = {token: '&lt;', catcode: cat};
+                if(ch === '<'){
+                    return { token: '&lt;', catcode: cat };
                 }
                 else if(tk === '>'){
-                    toYield = {token: '&gt;', catcode: cat};
+                    return { token: '&gt;', catcode: cat };
                 }
                 else if(tk === '`'){
                     /* Check if it's followed by another tick, because then
                      * we should return a double quote, rather than a single
                      * quote.
                      */
-                    if(tex[index + 1] === '`'){
-                        ++index;
-                        toYield = {token: '"', catcode: cat};
+                    if(this.tex[this.index + 1] === '`'){
+                        ++this.index;
+                        return { token: '&ldquo;', catcode: cat };
                     }
-                   else{
-                        toYield = {token: '\'', catcode: cat};
+                    else{
+                        return { token: '\'', catcode: cat };
                     }
                 }
                 else{
-                    toYield = {token: tk, catcode: cat};
+                    return { token: ch, catcode: cat };
                 }
             }
             else if(cat === DT.CATCODE.COMMENT){
                 var output = '';
-                while( ++index < tex.length && state.catcode( tex[index] ) !== DT.CATCODE.EOL){
-                    output += tex[index];
+                while( ++this.index < this.tex.length && this.state.catcode( this.tex[this.index] ) !== DT.CATCODE.EOL){
+                    output += this.tex[this.index];
                 }
-                toYield = {token: output, catcode: cat };
-                --index; //don't eat the newline
+                --this.index; //don't consume the newline character
+                return { token: output, catcode: cat };
             }
-           else{
-                toYield = {token: ch, catcode: cat};
+            else{
+                return { token: ch, catcode: cat };
             }
+        },
 
-            if(passback === 'repeat'){
-                index = oldIndex;
-            }
-
-            passback = yield toYield;
-
-            if(passback === 'repeat'){
-                oldIndex = index;
-            }
-
-            ++index;
+        eof: function(){
+            return this.index >= this.tex.length - 1; //if it's pointing to the last character, then we're already done.
         }
-
-        return {};
     };
 })(window.DiscoTeX = window.DiscoTeX || {});
-
-/*
-        getOptionalArg: function(){
-            if(this.data[this.index] !== "["){
-                return;
-            }
-            else{
-                var output = "";
-                var ch = "";
-                while(ch !== "]"){
-                    output += ch;
-                    ch = this.data[++this.index];
-                }
-                ++this.index;
-
-                return output;
-            }
-        },
-
-        getVerbatim: function(){
-            var tk = this.peek();
-            if(tk.catcode === DT.CATCODE.ESC){
-                tk = this.get();
-                return tk.leader + tk.token;
-            }
-            else if(tk.catcode === DT.CATCODE.BEGIN_GROUP){
-                var output = tk.token;
-
-                ++this.index;
-                tk = this.peek();
-                while(tk.catcode !== DT.CATCODE.END_GROUP){
-                    output += this.getVerbatim();
-                    tk = this.peek();
-                }
-
-                return output + this.get().token;
-            }
-            else{
-                return this.get().token;
-            }
-        },
-*/

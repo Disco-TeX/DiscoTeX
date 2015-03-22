@@ -65,22 +65,30 @@
             }
         },
 
+        getNormalArgument: function(){
+            var nextTk = this.stream.next();
+            if(typeof(nextTk) === 'undefined'){
+                this.logError('Not enough arguments provided');
+                return null;
+            }
+
+            return this.parseOne(nextTk, false)
+        },
+
         getAllArguments: function(cmdName, args){
             var argList = [];
+
             for(var i = 0; i < args.length; ++i){
                 argType = args[i];
                 if(argType === 'N' || argType === 'n'){
-                    var nextTk = this.stream.next();
-
-                    //This is a catch to ensure that enough arguments are provided
-                    if(typeof(nextTk) === 'undefined'){
-                        this.logError('Not enough arguments provided');
-                        return; //this just escapes out of the forEach function call
+                    var normalArg = this.getNormalArgument();
+                    if(normalArg === null){
+                        break;
                     }
 
                     //false takes the place of doParagraphCheck.
                     //FIXME is this always correct? I'm far from convinced.
-                    argList.push(this.parseOne(nextTk, false));
+                    argList.push(normalArg);
                 }
                 else if(argType === 'O' || argType === 'o'){
                     argList.push(this.getOptionalArgument());
@@ -135,67 +143,40 @@
                  */
                 argList = this.getAllArguments(tk.token, args);
             }
-            else if(typeof(args) === 'function' && args.constructor.name === 'GeneratorFunction'){
-                /* If the command arguments is a function generator, we delegate
-                 * the responsibility of filling argList to the generator. We loop
-                 * through calling .next() on it until it returns the argList.
+            else if(typeof(args) === 'function'){
+                /* If the command arguments is a function, we delegate the
+                 * responsibility of filling argList to it.
                  */
-
-                var gen = args.call(this);
-                gen.next();//setup. the first value sent in will be discarded.
-
-                var genOut = {done: false};
-                while(!genOut.done){
-                    var nextTk = this.stream.next();
-                    if(typeof(nextTk) === 'undefined'){
-                        this.logError('Not enough arguments provided');
-                        return '';
-                    }
-
-                    var np = this.parseOne(nextTk, false);
-
-                    genOut = gen.next(np);
-                }
-
-                argList = genOut.value;
+                argList = args.call(this);
             }
             else{
-                /* If you're code gets to this section, the user did not provide a valid argument
-                 * option (either an array, or a function generator). We log the error on the
-                 * console, because it's not a problem with the provided TeX, but with the provided
-                 * package. As for error recovery, we supply an empty argument list.
+                /* If you're code gets to this section, the user did not provide a
+                 * valid argument option (either a string , or a function). We log
+                 * the error on the console, because it's not a problem with the
+                 * provided TeX, but with the provided package. As for error recovery,
+                 * we supply an empty argument list.
                  */
                 console.error('The provided argument parameter for the command "' + tk.token + '" is not allowed.');
                 argList = [];
             }
 
-            /* Now that all of the arguments have been read and assigned to the argList variable
-             * we are ready to send them to the command. The command may be either a function, or
-             * a function generator. Some constructions are simple, and essentially boil down to
+            /* Now that all of the arguments have been read and assigned to the argList
+             * variable we are ready to send them to the command. The command must be a
+             * function. Some constructions are simple, and essentially boil down to
              * building a string from some formatting of the arguments. These are typically
-             * defined with functions. Others do complicated things with the state of the parser.
-             * Some need to send data and then afterwards make changes to the state. We use
-             * function generators for these.
+             * defined with functions. Others do complicated things with the state of the
+             * parser. Some need to send data and then afterwards make changes to the state.
+             * We use function generators for these.
              */
 
             var output = '';
-            if(cmd.fn.constructor.name === 'GeneratorFunction'){
-                /* There's something strange going on here, and I don't know what
-                 * Deal with it later
-                 */
-                var gen = cmd.fn.call(this, argList);
-                for(var x of gen){
-                    output += x;
-                }
-                return output;
-            }
-            else if(typeof(cmd.fn) === 'function'){
+            if(typeof(cmd.fn) === 'function'){
                 output = cmd.fn.call(this, argList);
             }
             else{
-                /* If you're code gets to this section, the user provided neither a funciton nor
-                 * a function generator. This should be an error logged in the console. As for
-                 * error recovery, the command and its parameters are ignored.
+                /* If you're code gets to this section, the user provided not a funciton.
+                 * This should be an error logged in the console. As for error recovery,
+                 * the command and its parameters are ignored.
                  */
                 console.error('The provided function parameter for the command "' + tk.token + '" is not a function.');
                 output = '';

@@ -223,17 +223,16 @@
         
         /* Sectioning (7) */
         'section' : {
-            args: function*(){
+            args: function(){
                 var ign = this.state.paragraph.ignore;
-                this.state.paragraph.ignore= true;
+                this.state.paragraph.ignore = true;
 
-                var arg1 = yield;
+                var arg1 = this.getNormalArgument();
                 if(arg1 !== '*'){
-
                     this.state.paragraph.ignore = ign;
                     return [undefined, arg1];
                 }
-                arg2 = yield;
+                arg2 = this.getNormalArgument();
                 this.state.paragraphs.ignore = ign;
 
                 return [arg1, arg2];
@@ -247,18 +246,18 @@
         },
 
         'subsection' : {
-            args: function*(){
+            args: function(){
                 var ign = this.state.paragraph.ignore;
                 this.state.paragraph.ignore = true;
 
-                var arg1 = yield;
-                if(arg1 !== "*"){
+                var arg1 = this.getNormalArgument();
+                if(arg1 !== '*'){
                     this.state.paragraph.ignore = ign;
                     return [undefined, arg1];
                 }
+                arg2 = this.getNormalArgument();
+                this.state.paragraphs.ignore = ign;
 
-                arg2 = yield;
-                this.state.paragraph.ignore = ign;
                 return [arg1, arg2];
             },
             inParagraph: false,
@@ -269,19 +268,17 @@
         },
 
         'subsubsection' : {
-            args: function*(){
+            args: function(){
                 var ign = this.state.paragraph.ignore;
                 this.state.paragraph.ignore = true;
 
-                var arg1 = yield;
-                if(arg1 !== "*"){
+                var arg1 = this.getNormalArgument();
+                if(arg1 !== '*'){
                     this.state.paragraph.ignore = ign;
-
                     return [undefined, arg1];
                 }
-
-                arg2 = yield;
-                this.state.paragraph.ignore = ign;
+                arg2 = this.getNormalArgument();
+                this.state.paragraphs.ignore = ign;
 
                 return [arg1, arg2];
             },
@@ -787,7 +784,7 @@
         },
 
         'verb' : {
-            args: function*(){
+            args: function(){
                 var ccdb = this.state.catcodeDB;
                 //set to default
                 this.state.resetCatcodes();
@@ -799,10 +796,10 @@
                 var endVerb;
 
                 var ast = false;
-                var asteriskOrFirst = yield;
+                var asteriskOrFirst = this.getNormalArgument();
                 if(asteriskOrFirst === '*'){
                     ast = true;
-                    endVerb = yield;
+                    endVerb = this.getNormalArgument();
                 }
                 else{
                     endVerb = asteriskOrFirst;
@@ -810,7 +807,7 @@
 
                 while(nextArg !== endVerb){
                     args.push(nextArg);
-                    nextArg = yield;
+                    nextArg = this.getNormalArgument();
                 }
 
                 this.state.catcodeDB = ccdb;
@@ -828,7 +825,7 @@
         },
 
         '[' : {
-            args: function*(){
+            args: function(){
                 var ccdb = this.state.catcodeDB;
                 
                 //set to default
@@ -840,7 +837,7 @@
                 var leader = '';
                 var arg = '';
                 while(endFlag < 2){
-                    var next = yield;
+                    var next = this.getNormalArgument();
                     var isLeader = (ccdb[next] === DT.CATCODE.ESC || (typeof(ccdb[next]) === 'undefined' && next === '\\')); //FIXME magic leader (\\ is the default leader)
                     if(endFlag === 0 && isLeader){
                         leader = next;

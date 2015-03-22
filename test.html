@@ -31,7 +31,7 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
 
 <dt-sidebar></dt-sidebar>
 <div class="col-md-6" role="main">
-   <p>This document is a basic test of \(\mathrm{Disco\TeX}\)'s functionality.
+   <p>This document is a basic test of \(\mathrm{Disco\TeX}\)&rsquo;s functionality.
       Tests are organized according to the order given on <a href="ftp://ftp.tex.ac.uk/tex-archive/info/latex2e-help-texinfo/latex2e.html">this page</a>.</p>
    <dt-section section-title="" number = "1"></dt-section><!-- TODO -->
    <dt-section section-title="" number = "2"></dt-section><!-- TODO -->
@@ -158,7 +158,7 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
                <dt-subsection section-title="titlepage" number = "1"></dt-subsection>
                <p>The next page is a titlepage created with the <em>titlepage</em> environment.</p>
                <dt-titlepage>
-                  <p>This document was last edited March 21, 2015.</p>
+                  <p>This document was last edited March 22, 2015.</p>
                   </dt-titlepage>
                <dt-subsection section-title="verbatim" number = "1"></dt-subsection><!-- Autotabbing in DiscoTeX need to be turned off for the verbatim env. FIXME -->
                <pre>This is a verbatim             environment.
@@ -172,7 +172,7 @@ and they are read in exactly.</pre>
                <dt-verse>
                   <p>Roses are red<br/>
                         Violets are blue<br/>
-                           This poem doesn't rhyme.</p>
+                           This poem doesn&rsquo;t rhyme.</p>
                         </dt-verse>
                      <dt-section section-title="Line breaking" number = "10"></dt-section><!-- TODO -->
                      <dt-section section-title="Page breaking" number = "11"></dt-section><!-- TODO -->
@@ -236,12 +236,12 @@ and they are read in exactly.</pre>
                               <code>\textordmasculine</code> </td><td> &ordm;</td></tr>
                         <tr><td>
                               <code>\textquestiondown</code> </td><td> &iexcl; </td><td>
-                              <code>\textquotedblleft</code> or <code>``</code> </td><td> &ldquo; or ``</td></tr>
+                              <code>\textquotedblleft</code> or <code>&ldquo;</code> </td><td> &ldquo; or &ldquo;</td></tr>
                         <tr><td>
                               <code>\textquotedblright</code> </td><td> &rdquo; </td><td>
-                              <code>\textquoteleft</code> or <code>`</code> </td><td> &lsquo; or `</td></tr>
+                              <code>\textquoteleft</code> or <code>&lsquo;</code> </td><td> &lsquo; or &lsquo;</td></tr>
                         <tr><td>
-                              <code>\textquoteright</code> or <code>'</code> </td><td> &rsquo; or ' </td><td>
+                              <code>\textquoteright</code> or <code>&rsquo;</code> </td><td> &rsquo; or &rsquo; </td><td>
                               <code>\textregistered</code> </td><td> &reg;</td></tr>
                         <tr><td>
                               <code>texttrademark</code> </td><td> &trade;</td><td>
@@ -250,9 +250,9 @@ and they are read in exactly.</pre>
                               <code>textvisiblespace</code> </td><td> &blank;
                               </td></tr></table>
                      <p>Other symbols that need to be tested more thoroughly are:</p>
-                     <dt-subsection section-title="Circled characters" number = "1"></dt-subsection> <p>A single character as an argument to <code>\textcircled{...}</code> produces ``<span class="circled">a</span>.'' If multiple characters are given, it produces ``<span class="circled">h</span>ello.'' If no characters are given, it produces ``<span class="circled">&nbsp;</span>.''</p>
+                     <dt-subsection section-title="Circled characters" number = "1"></dt-subsection> <p>A single character as an argument to <code>\textcircled{...}</code> produces &ldquo;<span class="circled">a</span>.&rdquo; If multiple characters are given, it produces &ldquo;<span class="circled">h</span>ello.&rdquo; If no characters are given, it produces &ldquo;<span class="circled">&nbsp;</span>.&rdquo;</p>
                      <dt-subsection section-title="Invisible" number = "1"></dt-subsection>
-                     <p>\(\mathrm{Disco\TeX}\) creates ligatures between characters such as ``fl'' or ``fi.'' Placing this command between these characters separates the ligatures, as in ``f&#8291;l'' or ``f&#8291;i.''
+                     <p>\(\mathrm{Disco\TeX}\) creates ligatures between characters such as &ldquo;fl&rdquo; or &ldquo;fi.&rdquo; Placing this command between these characters separates the ligatures, as in &ldquo;f&#8291;l&rdquo; or &ldquo;f&#8291;i.&rdquo;
                         <!--     \item[\verb|textcapitalwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF. --></p>
                      <!--     \item[\verb|textascenderwordmark|] Produces the same as \verb|textcompwordmark| in \DiscoTeX{}, but it will be slightly different in a PDF. -->
                      <dt-subsection section-title="Accents" number = "1"></dt-subsection>
@@ -305,6 +305,7 @@ and they are read in exactly.</pre>
                      <dt-subsection section-title="Non-english characters" number = "1"></dt-subsection>
                      <p>&aring;, &Aring;, &aelig;, &AElig;, &ijlig;, &IJlig;, &#321 &#322 &oslash;, &Oslash;, &oelig;, &OElig;, &szlig;, SS</p>
                      </div>
+
 <script type="text/javascript">
 setTimeout(function(){MathJax.Hub.Configured();},100);
 </script>

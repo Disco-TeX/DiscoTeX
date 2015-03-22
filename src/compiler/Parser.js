@@ -72,6 +72,8 @@
                 return null;
             }
 
+            //false takes the place of doParagraphCheck.
+            //FIXME is this always correct? I'm far from convinced.
             return this.parseOne(nextTk, false)
         },
 
@@ -86,9 +88,7 @@
                         break;
                     }
 
-                    //false takes the place of doParagraphCheck.
-                    //FIXME is this always correct? I'm far from convinced.
-                    argList.push(normalArg);
+                   argList.push(normalArg);
                 }
                 else if(argType === 'O' || argType === 'o'){
                     argList.push(this.getOptionalArgument());

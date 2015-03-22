@@ -89,10 +89,10 @@
                 if(ch === '<'){
                     return { token: '&lt;', catcode: cat };
                 }
-                else if(tk === '>'){
+                else if(ch === '>'){
                     return { token: '&gt;', catcode: cat };
                 }
-                else if(tk === '`'){
+                else if(ch === '`'){
                     /* Check if it's followed by another tick, because then
                      * we should return a double quote, rather than a single
                      * quote.
@@ -102,7 +102,20 @@
                         return { token: '&ldquo;', catcode: cat };
                     }
                     else{
-                        return { token: '\'', catcode: cat };
+                        return { token: '&lsquo;', catcode: cat };
+                    }
+                }
+                else if(ch === '\''){
+                    /* Check if it's followed by another tick, because then
+                     * we should return a double quote, rather than a single
+                     * quote.
+                     */
+                    if(this.tex[this.index + 1] === '\''){
+                        ++this.index;
+                        return { token: '&rdquo;', catcode: cat };
+                    }
+                    else{
+                        return { token: '&rsquo;', catcode: cat };
                     }
                 }
                 else{

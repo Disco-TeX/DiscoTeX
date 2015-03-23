@@ -186,66 +186,16 @@
 
         /* Layout (6) */
         'onecolumn' : '', // This is intentionally ignored, because two-column layouts are not supported by DiscoTeX
-        'twocolumn' : { args: 'O',
-            fn: function(args){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'columnsep' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'columnseprule' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'columnsepwidth' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'dbltopfraction' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'dblfloatpagefraction' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'dblfloatsep' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'dbltextfloatsep' : { args: '',
-            fn: function(){
-                this.logWarning('Multiple column layouts are not supported by DiscoTeX.');
-                return '';
-            }
-        },
-        'flushbottom' : { args: '',
-            fn: function(){
-                this.logWarning('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
-                return '';
-            }
-        },
-        'raggedbottom' : { args: '',
-            fn: function(){
-                this.logWarning('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
-                return '';
-            }
-        },
+        'twocolumn' : { args: 'O', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnseprule' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnsepwidth' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltopfraction' : { args: '', fn : ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltextfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'flushbottom' : { args: '', fn: ignore('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'raggedbottom' : { args: '', fn: ignore('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         
         /* Sectioning (7) */
         'section' : {
@@ -520,12 +470,21 @@
 
         /* Page breaking (11) */
 
-        'cleardoublepage' : '', // <-- irrelevant on web
-        'clearpage' : '', // <-- irrelevant on web
-        'newpage' :	'', // <-- irrelevant on web
-        'enlargethispage' : '', // <-- irrelevant on web
-        'pagebreak' : '', // <-- irrelevant on web
-        'nopagebreak' : '', // <-- irrelevant on web
+        'cleardoublepage' : { args: '', fn: ignore('"cleardoublepage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'clearpage' : { args: '', fn: ignore('"clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'newpage' : { args: '', fn: ignore('"newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'enlargethispage' : {
+            args: function(){
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
+                this.getNormalArgument();
+                return [];
+            },
+            fn: ignore('"enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
+        },
+        'pagebreak' : { args: 'O', fn: ignore('"pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'nopagebreak' : { args: 'O', fn: ignore('"nopagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Footnotes (12) */
         'footnote' : { args: 'ON',

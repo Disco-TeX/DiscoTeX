@@ -175,7 +175,11 @@
 
         'usepackage' : { args: 'ON',//FIXME
             fn: function(args){
-                //console.log('I need to load package "' + args[1] + '"' + (typeof(args[0]) === 'undefined' ? '' : ' with options ' + args[1]));
+                //FIXME we really need to be loading the packages from elsewhere.
+                //this is for testing pursposes only.
+
+                DT.addPackage(DT.packages[args[1]]);
+                
                 return '';
             }
         },

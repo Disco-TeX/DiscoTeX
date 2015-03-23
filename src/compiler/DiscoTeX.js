@@ -78,7 +78,7 @@
             }
             DT.Env[env] = pkg.Env[env];
         }
-        for(cls in pkg.cls){
+        for(cls in pkg.Classes){
             if(typeof(DT.Classes[cls]) !== 'undefined'){
                 console.error('There already exists a command called "' + cmd + '".');
             }

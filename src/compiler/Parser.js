@@ -1,3 +1,4 @@
+//NOTE TO SELF: A "SCOPEFINISHED" BUG IS BECAUSE I FORGOT TO RETURN FROM SOME FUNCTION IN TEX.JS
 (function(DT){
     DT.Parser = function(tex, modDate){
         /* As we read through the source, we will need to access certain data.
@@ -354,7 +355,7 @@
                  * to ignore a paragarph, there is no need to do anything.
                  */
                 if(this.state.paragraph.ignore || !this.state.paragraph.inside){
-                    return '\n';
+                    return (this.state.obeycr ? '\n<br/>\n' : '\n');
                 }
 
                 /* Otherwise, we need to add a new paragraph if the last
@@ -368,7 +369,7 @@
                  */
                 if(!this.state.paragraph.lastWasEOL){
                     this.state.paragraph.lastWasEOL = true;
-                    return '\n';
+                    return (this.state.obeycr ? '\n<br/>\n' : '\n');
                 }
                 /* If the last character was an EOL character, and we
                  * are in a paragraph, we still need to know if we have seen
@@ -376,7 +377,7 @@
                  * have a state variable for this as well: "seenNonEOL"
                  */
                 if(!this.state.paragraph.seenNonEOL){
-                    return '\n';
+                    return (this.state.obeycr ? '\n<br/>\n' : '\n');
                 }
                 /* If you get past all of the above checks, then you've seen
                  * real content (i.e., the paragraph that you want to end has

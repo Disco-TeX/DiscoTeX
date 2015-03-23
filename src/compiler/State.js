@@ -35,6 +35,13 @@
         };
         this.vars = {};
 
+        /* Obeying CR:
+         * The \obeycr command makes it so TeX's linebreaking displays
+         * linebreaks. By default this is turned off. If you turn it
+         * on, you can turn it off with the \restorecr command. We
+         * need a state variable for it.
+         */
+        this.obeycr = false;
 
         /* ENVIRONMENTS:
          *

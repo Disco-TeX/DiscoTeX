@@ -482,7 +482,7 @@
                 }
 
                 return [this.getOptionalArgument()];
-                           },
+            },
             fn: function(args){
                 if(typeof(args[0]) === 'undefined'){
                     return '<br/>';
@@ -490,8 +490,23 @@
                 return '<div style="height:' + translateDistance(args[0]) + ';"></div>';
             }
         },
-        'obeycr' : '', //FIXME
-        'restorecr' : '', //FIXME
+
+        'obeycr' : {
+            args: '',
+            fn: function(){
+                this.state.obeycr = true;
+                return '';
+            }
+        },
+
+        'restorecr' : {
+            args: '',
+            fn: function(){
+                this.state.obeycr = false;
+                return '';
+            }
+        },
+
         'newline' : '<br/>',
 
         /* The following commands are intentionally ignore()d

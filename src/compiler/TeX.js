@@ -617,7 +617,11 @@
         }
 
         /* Boxes (21) */
-        'mbox' : '', //FIXME
+        'mbox' : { args: 'N', 
+            fn: function(args){
+                return '<span class="mbox">' + args[0] + '</span>';
+            }
+        },
         'fbox' : { args: 'OON',
             fn: function(args){
                 return '<span class="fbox">' + args[2] + '</span>';
@@ -628,7 +632,6 @@
                 return '<span class="fbox">' + args[2] + '</span>';
             }
         },
-        'lrbox' : '', //FIXME
         'makebox' : '', //FIXME
         'parbox' : '', //FIXME
         'raisebox' : '', //FIXME
@@ -713,7 +716,6 @@
         'v' : accentBuilder(780),
         'd' : accentBuilder(803), //FIXME in a group, displays in the middle
         'c' : accentBuilder(807),
-        //'k' : accentBuilder(808), //not supported in standard TeX
         'b' : accentBuilder(817), //FIXME In a group, displays in the middle
         't' : accentBuilder(865), //FIXME doesn't display properly
 

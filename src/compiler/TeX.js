@@ -194,8 +194,8 @@
         'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dblfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dbltextfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'flushbottom' : { args: '', fn: ignore('"flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'raggedbottom' : { args: '', fn: ignore('"raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'flushbottom' : { args: '', fn: ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'raggedbottom' : { args: '', fn: ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         
         /* Sectioning (7) */
         'section' : {
@@ -470,9 +470,9 @@
 
         /* Page breaking (11) */
 
-        'cleardoublepage' : { args: '', fn: ignore('"cleardoublepage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'clearpage' : { args: '', fn: ignore('"clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'newpage' : { args: '', fn: ignore('"newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'cleardoublepage' : { args: '', fn: ignore('The "cleardoublepage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'clearpage' : { args: '', fn: ignore('The "clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'newpage' : { args: '', fn: ignore('The "newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'enlargethispage' : {
             args: function(){
                 if(this.stream.peek() === '*'){
@@ -481,10 +481,10 @@
                 this.getNormalArgument();
                 return [];
             },
-            fn: ignore('"enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
+            fn: ignore('The "enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
         },
-        'pagebreak' : { args: 'O', fn: ignore('"pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'nopagebreak' : { args: 'O', fn: ignore('"nopagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagebreak' : { args: 'O', fn: ignore('The "pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'nopagebreak' : { args: 'O', fn: ignore('The "nopagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Footnotes (12) */
         'footnote' : { args: 'ON',
@@ -525,7 +525,7 @@
         /* Modes (18) ... nothing here */
 
         /* Page styles (19) */
-        'maketitle': {args: '', //FIXME redo this
+        'maketitle': {args: '',
             fn: function(){
                 var title = this.getVariable('title');
                 var author = this.getVariable('author');
@@ -554,19 +554,67 @@
         'title': setVariable('title'),
 
 
-        'pagenumbering' : { args: 'N', fn: ignore() }, //FIXME
-        'pagestyle' : { args: 'N', fn: ignore() }, //FIXME
-        'thispagestyle' : { args: 'N', fn: ignore() }, //FIXME
+        'pagenumbering' : { args: 'N', fn: ignore('The "pagenumbering" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagestyle' : { args: 'N', fn: ignore('The "pagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'thispagestyle' : { args: 'N', fn: ignore('The "thispagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Spaces (20) */
-        'hspace' : '', //FIXME
+        'hspace' : {
+            args: function(){
+                /* The asterisk tells LaTeX not to start a new page
+                 * on the PDF, so we ignore it. We don't even send
+                 * it to the command function.
+                 */
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
+
+                return [this.getNormalArgument()];
+            },
+            fn: function(args){
+                return '<span style="width:' + translateDistance(args[0]) + ';"></span>';
+            }
+        },
         'hfill' : '', //FIXME
-        'SPACE' : '', //FIXME
-        '@' : '', //FIXME
-        'thinspace' : '', //FIXME
-        '/' : '', //FIXME
+        'SPACE' : '&nbsp;',
+
+        /* The '\@' command makes the next punctuation character end
+         * a sentence. As far as I can tell, there is no way to do
+         * this with CSS. It's probably used rarely, that it's not
+         * worth it. Regardless, we'll leave a FIXME tag here, so we
+         * can find it later.
+         */
+        '@' : ignore(),
+        'thinspace' : '&thinsp;',
+        /* The '\/' command corrects spacing where an italic section
+         * ends and an upright section begins. HTML + CSS may do this
+         * automatically... I have no idea. This is low-priority, but
+         * still gets a FIXME tag in case we decide to deal with it.
+         */
+        '/' : '',
         'hrulefill' : '', //FIXME
         'dotfill' : '', //FIXME
+        'addvspace' : '', //FIXME
+        'bigskip' : '', //FIXME
+        'medskip' : '', //FIXME
+        'smallskip' : '', //FIXME
+        'vfill' : '', //FIXME
+        'vspace' : {
+            args: function(){
+                /* The asterisk tells LaTeX not to start a new page
+                 * on the PDF, so we ignore it. We don't even send
+                 * it to the command function.
+                 */
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
+
+                return [this.getNormalArgument()];
+            },
+            fn: function(args){
+                return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
+            }
+        }
 
         /* Boxes (21) */
         'mbox' : '', //FIXME

@@ -44,8 +44,8 @@
                 document.getElementById('output').innerText = html;
                 console.log('Execution time: ' + (end - start)/1000 + ' seconds')
             }
-        })
-    }
+        });
+    };
 
 
     DT.getCmd = function(tk){
@@ -66,15 +66,25 @@
     }
 
     DT.addPackage = function(pkg){
-        //FIXME make this better later.
-        //for now...
-
         for(cmd in pkg.Cmd){
+            if(typeof(DT.Cmd[cmd]) !== 'undefined'){
+                console.error('There already exists a command called "' + cmd + '".');
+            }
             DT.Cmd[cmd] = pkg.Cmd[cmd];
         }
         for(env in pkg.Env){
+            if(typeof(DT.Cmd[cmd]) !== 'undefined'){
+                console.error('There already exists an environment called "' + env + '".');
+            }
             DT.Env[env] = pkg.Env[env];
         }
+        for(cls in pkg.cls){
+            if(typeof(DT.Classes[cls]) !== 'undefined'){
+                console.error('There already exists a command called "' + cmd + '".');
+            }
+            DT.Classes[cls] = pkg.Classes[cls];
+        }
+
     };
 
     DT.Classes = {

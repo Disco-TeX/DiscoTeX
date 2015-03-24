@@ -6,6 +6,10 @@ html {
     /*background-color: lightgrey;*/
 }
 
+dt-section, dt-subsection{
+    font-family: sans-serif;
+}
+
 dt-theoremlike.corollary > .panel-default > .panel-heading {
     background-color: lightblue;
 }
@@ -68,4 +72,8 @@ blockquote.indent > p{
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;
+}
+
+dt{
+    font-family: sans-serif;
 }

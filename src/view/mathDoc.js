@@ -6,6 +6,7 @@
                             'proof-directive',
                             'reference-directive',
                             'section-directive',
+                            'subsection-directive',
                             'sidebar-directive',
                             'theorem-directive',
                            ]);

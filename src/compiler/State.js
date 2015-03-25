@@ -33,7 +33,17 @@
             'subsection': 0,
             'subsubsection': 0
         };
-        this.vars = {};
+        this.vars = {
+            'columnsep' : '35pt',
+            'columnseprule' : '0pt',
+        };
+
+        /* Columns:
+         * We need to count how many columns we are currently showing.
+         * The default is 1, though maybe a document class can change
+         * this.
+         */
+        this.columnCount = 1;
 
         /* Obeying CR:
          * The \obeycr command makes it so TeX's linebreaking displays

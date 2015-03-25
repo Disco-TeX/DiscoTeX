@@ -72,6 +72,13 @@
         } };
     };
 
+    var getVariable = function(varName){
+        return { args: 'N', fn: function(args){
+            return this.state.vars[varName];
+        } };
+    };
+
+
     var ignore = function(msg){ 
         return function(){
             if(typeof(msg) !== 'undefined'){
@@ -189,10 +196,53 @@
         /* Low-level font commands (5.3) */ //FIXME do this
 
         /* Layout (6) */
-        'onecolumn' : '', // This is intentionally ignored, because two-column layouts are not supported by DiscoTeX
-        'twocolumn' : { args: 'O', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'columnsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'columnseprule' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'onecolumn' : { args: '',
+            fn: function(){
+                if(this.state.columnCount === 1){
+                    return '';
+                }
+
+                //FIXME you can't just close the div and hope
+                //for the best. you need to pop a lot of stuff
+                //off the stack, and if things don't line up,
+                //through a bunch of errors.
+
+                //FIXME this works, but is inelegant. it should
+                //be hidden in a <dt-column> command
+                this.state.columnCount = 1;
+                var c = 'columns:' + this.state.columnCount + ';';
+                c += ' -webkit-' + c + ' -moz-' + c;
+                var cg = 'column-gap:' + translateDistance(this.state.vars['columnsep']) + ';';
+                cg += ' -webkit-' + cg + ' -moz-' + cg;
+                var cr = 'column-rule:' + translateDistance(this.state.vars['columnseprule']) + ';';
+                cr += ' -webkit-' + cr + ' -moz-' + cr;
+                return '</div>\n<div style="' + [c, cg, cr].join(' ') +  '">';
+            }
+        },
+        'twocolumn' : { args: '',
+            fn: function(){
+                if(this.state.columnCount === 2){
+                    return '';
+                }
+
+                //FIXME you can't just close the div and hope
+                //for the best. you need to pop a lot of stuff
+                //off the stack, and if things don't line up,
+                //through a bunch of errors.
+
+                this.state.columnCount = 2;
+                var c = 'columns:' + this.state.columnCount + ';';
+                c += ' -webkit-' + c + ' -moz-' + c;
+                var cg = 'column-gap:' + translateDistance(this.state.vars['columnsep']) + ';';
+                cg += ' -webkit-' + cg + ' -moz-' + cg;
+                var cr = 'column-rule:' + translateDistance(this.state.vars['columnseprule']) + ' solid #000;';
+                cr += ' -webkit-' + cr + ' -moz-' + cr;
+                return '</div>\n<div style="' + [c, cg, cr].join(' ') +  '">';
+            }
+        },
+        'columnsep' : getVariable('columnsep'),
+        'columnseprule' : getVariable('columnseprule'),
+
         'columnsepwidth' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dbltopfraction' : { args: '', fn : ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
@@ -1011,12 +1061,12 @@
                 }
             },
 
-           'document' : {
+           'document' : { //THIS IS A MASSIVE HACK. FIXME. Move it to the document class
                 begin: function(eid){
-                    return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">';
+                    return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">';
                 },
                 end: function(){
-                    return '</div>' + this.setDisplay(false);
+                    return '</div>\n</div>' + this.setDisplay(false);
                 }
             },
 

@@ -88,7 +88,7 @@
     };
 
     DT.Classes = {
-        'article' : '<!--TOC-->\n<div class="col-md-6" role="main">\n<!--DOCUMENT-->\n</div>'
+        'article' : '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">\n<!--DOCUMENT-->\n</div>\n</div>'
     };
 
 })(window.DiscoTeX = window.DiscoTeX || {});

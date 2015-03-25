@@ -178,7 +178,7 @@
                 //FIXME we really need to be loading the packages from elsewhere.
                 //this is for testing pursposes only.
 
-                DT.addPackage(DT.packages[args[1]]);
+                //DT.addPackage(DT.packages[args[1]]);
                 
                 return '';
             }
@@ -618,7 +618,7 @@
             fn: function(args){
                 return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
             }
-        }
+        },
 
         /* Boxes (21) */
         'mbox' : { args: 'N', 

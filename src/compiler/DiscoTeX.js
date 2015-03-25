@@ -73,7 +73,7 @@
             DT.Cmd[cmd] = pkg.Cmd[cmd];
         }
         for(env in pkg.Env){
-            if(typeof(DT.Cmd[cmd]) !== 'undefined'){
+            if(typeof(DT.Env[env]) !== 'undefined'){
                 console.error('There already exists an environment called "' + env + '".');
             }
             DT.Env[env] = pkg.Env[env];

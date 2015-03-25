@@ -225,6 +225,8 @@
                     return '';
                 }
 
+                this.logWarning('Be careful using a two-column layout on the web. Because there are no pages, a single column can extend much further than it would on a PDF, rendering the web-document much less beautiful than it\'s PDF counterpart.');
+
                 //FIXME you can't just close the div and hope
                 //for the best. you need to pop a lot of stuff
                 //off the stack, and if things don't line up,

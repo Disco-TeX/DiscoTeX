@@ -243,14 +243,22 @@
         'columnsep' : getVariable('columnsep'),
         'columnseprule' : getVariable('columnseprule'),
 
-        'columnsepwidth' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnwidth' : '',//FIXME
         'dbltopfraction' : { args: '', fn : ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dblfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dbltextfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'flushbottom' : { args: '', fn: ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'raggedbottom' : { args: '', fn: ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        
+        'headheight': '', //FIXME
+        'headsep': '', //FIXME
+        'footskip': '', //FIXME
+        'linewidth': '', //FIXME
+        'textheight': '', //FIXME
+        'textwidth': '', //FIXME
+        'topmargin': '', //FIXME
+        'topskip': '', //FIXME
+
         /* Sectioning (7) */
         'section' : {
             args: function(){

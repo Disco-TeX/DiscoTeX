@@ -28,11 +28,11 @@
 
     DT.Parser.prototype = {
         logError: function(err){ this.errs.push({
-            line: 0,
-            message: err}); },
+            line: this.stream.getLineNumber(),
+            message: err, type: 'danger'}); },
         logWarning: function(w){ this.warnings.push({
-            line: 0,
-            message: w}); },
+            line: this.stream.getLineNumber(),
+            message: w, type: 'warning'}); },
 
         getErrorLog: function(){
             return this.errs;

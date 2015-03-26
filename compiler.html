@@ -48,6 +48,8 @@ window.onload = function(){
 }
 
 compile = function(file){
+    $.ajaxSetup({ cache: false });
+
     $.ajax({
 type: 'GET',
 async: true,
@@ -60,26 +62,22 @@ var parser = new DiscoTeX.Parser(data, modDate);
 var html = parser.parse();
 var end = new Date().getTime();
 
-elog = parser.getErrorLog();
-$('#err-link span.badge').text(elog.length !== 0 ? elog.length : '');
-$('#err-tab').text(elog);
-var elogString = '';
-elog.forEach(function(el){
-    wlogString += '<tr><td>' + el.line + '</td><td>' + el.message + '</td></tr>';
+var ewlog = parser.getErrorLog();
+ewlog = ewlog.concat(parser.getWarningLog());
+
+//ewlog.concat(parser.getWarningLog());
+
+ewlog.sort(function(x, y){ return x.line > y.line; });
+
+$('#err-link span.badge').text(ewlog.length !== 0 ? ewlog.length : '');
+$('#err-tab').text(ewlog);
+var ewlogString = '';
+ewlog.forEach(function(el){
+        ewlogString += '<tr class="' + el.type + '"><td align="right"><strong>' + el.line + '</strong></td><td>' + el.message + '</td></tr>';
     });
 
-elogString = '<br/><div class="row"><div class="col-md-10 col-md-offset-1"><table class="table table-hover"><thead><th>Line:</th><th>Message:</th></thead></thead>' + elogString + '</table></div></div>';
-$('#err-tab').html(elogString);
-
-wlog = parser.getWarningLog();
-$('#warn-link span.badge').text(wlog.length !== 0 ? wlog.length : '');
-var wlogString = '';
-wlog.forEach(function(el){
-    wlogString += '<tr><td>' + el.line + '</td><td>' + el.message + '</td></tr>';
-    });
-
-wlogString = '<br/><div class="row"><div class="col-md-10 col-md-offset-1"><table class="table table-hover"><thead><th>Line:</th><th>Message:</th></thead></thead>' + wlogString + '</table></div></div>';
-$('#warn-tab').html(wlogString);
+ewlogString = '<br/><div class="row"><div class="col-md-10 col-md-offset-1"><table class="table table-hover"><thead><th>Line:</th><th>Message:</th></thead></thead>' + ewlogString + '</table></div></div>';
+$('#err-tab').html(ewlogString);
 
 $('#output').text(html);
 
@@ -109,8 +107,7 @@ nav, pre{
 
     <ul class="nav nav-tabs">
         <li role="presentation" id="in-link" class="active"aria-controls="" role="tab" data-toggle="tab"><a href="#in-tab" aria-controls="input" role="tab" data-toggle="tab">Input</a></li>
-        <li role="presentation" id="err-link"><a href="#err-tab" aria-controls="err" role="tab" data-toggle="tab">Errors <span class="badge"></span></a></li>
-        <li role="presentation" id="warn-link"><a href="#warn-tab" aria-controls="warn" role="tab" data-toggle="tab">Warnings <span class="badge"></span></a></li>
+        <li role="presentation" id="err-link"><a href="#err-tab" aria-controls="err" role="tab" data-toggle="tab">Errors/Warnings <span class="badge"></span></a></li>
         <li role="presentation" id="out-link"><a href="#out-tab" aria-controls="out" role="tab" data-toggle="tab">Output</a></li>
         <li role="presentation" class="pull-right navbar-text" id="execTime"></li>
     </ul>
@@ -121,7 +118,6 @@ nav, pre{
             <button onclick="compile('test2.tex');" class="btn btn-primary">Compile</button>
         </div>
         <div role="tabpanel" class="tab-pane" id="err-tab"></div>
-        <div role="tabpanel" class="tab-pane" id="warn-tab"></div>
         <div role="tabpanel" class="tab-pane" id="out-tab">
             <pre id="output"></pre>
         </div>

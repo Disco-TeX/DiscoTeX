@@ -17,6 +17,7 @@
         this.index = -1; //points to the last character to be read in. thus, it starts pointing before the stream
         this.tex = tex;
         this.state = state;
+        this.lineNum = 1;
     };
 
     DT.TeXStream.prototype = {
@@ -26,8 +27,10 @@
             }
 
             var oldIndex = this.index;
+            var oldLineNum = this.lineNum
             var token = this.next();
             this.index  = oldIndex;
+            this.lineNum = oldLineNum
             return token;
         },
 
@@ -38,6 +41,14 @@
 
             var ch = this.tex[++this.index];
             var cat = this.state.catcode(ch);
+
+            /* We check '\n' rather than CATCODE.EOL
+             * because we want it to match, even when
+             * catcodes are changed.
+             */
+            if(ch === '\n'){
+                ++this.lineNum;
+            }
 
             if(cat === DT.CATCODE.ESC){
                 //read 1 non-letter, or a bunch of letters,
@@ -130,9 +141,13 @@
                 --this.index; //don't consume the newline character
                 return { token: output, catcode: cat };
             }
-            else{
+           else{
                 return { token: ch, catcode: cat };
             }
+        },
+
+        getLineNumber: function(){
+            return this.lineNum;
         },
 
         eof: function(){

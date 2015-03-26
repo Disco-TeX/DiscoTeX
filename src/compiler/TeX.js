@@ -1071,14 +1071,14 @@
 
             'eqnarray' : {
                 parse: function(eid, args, content){
-                    this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray environment');
+                    this.logWarning('According to the \\(\\LaTeX2e\\) standard, you should not be using the eqnarray environment');
                     return 'MATHJAX'; //FIXME
                 }
             },
 
             'eqnarray*' : {
                 parse: function(eid, args, content){
-                    this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray* environment');
+                    this.logWarning('According to the \\(\\LaTeX2e\\) standard, you should not be using the eqnarray* environment');
                     return 'MATHJAX'; //FIXME
                 }
             },

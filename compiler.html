@@ -6,17 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta charset="UTF-8" />
 
-<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
-<!-- computer modern -->
-<link rel="stylesheet" href="style/fonts/cm/Serif Slanted/cmun-serif-slanted.css"></link>
+<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <!-- MathJax -->
 <script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
 <!-- DiscoTeX -->
 <script type="text/javascript" src="src/compiler/catcode.js"></script>
@@ -30,25 +29,105 @@
 
 <script>
 window.onload = function(){
-    DiscoTeX.parseDocument('test.tex');
+    $('#in-link a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            });
+    $('#err-link a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            });
+    $('#warn-link a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            });
+    $('#out-link a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            });
+}
+
+compile = function(file){
+    $.ajax({
+type: 'GET',
+async: true,
+timeout: 5000,
+url: file,
+success: function(data, textStatus, request){
+var start = new Date().getTime();
+var modDate  = new Date(request.getResponseHeader('Last-Modified'));
+var parser = new DiscoTeX.Parser(data, modDate);
+var html = parser.parse();
+var end = new Date().getTime();
+
+elog = parser.getErrorLog();
+$('#err-link span.badge').text(elog.length !== 0 ? elog.length : '');
+$('#err-tab').text(elog);
+var elogString = '';
+elog.forEach(function(el){
+    wlogString += '<tr><td>' + el.line + '</td><td>' + el.message + '</td></tr>';
+    });
+
+elogString = '<br/><div class="row"><div class="col-md-10 col-md-offset-1"><table class="table table-hover"><thead><th>Line:</th><th>Message:</th></thead></thead>' + elogString + '</table></div></div>';
+$('#err-tab').html(elogString);
+
+wlog = parser.getWarningLog();
+$('#warn-link span.badge').text(wlog.length !== 0 ? wlog.length : '');
+var wlogString = '';
+wlog.forEach(function(el){
+    wlogString += '<tr><td>' + el.line + '</td><td>' + el.message + '</td></tr>';
+    });
+
+wlogString = '<br/><div class="row"><div class="col-md-10 col-md-offset-1"><table class="table table-hover"><thead><th>Line:</th><th>Message:</th></thead></thead>' + wlogString + '</table></div></div>';
+$('#warn-tab').html(wlogString);
+
+$('#output').text(html);
+
+
+$('#execTime').text('Compilation time: ' + ((end - start) / 1000) + ' seconds');
+}
+
+});
 }
 </script>
 <style type="text/css">
-#output{
-    height: 100%;
-}
-.cm{
-    font-family: "Computer Modern Serif Slanted";
-    font-weight: bold;
+nav, pre{
+    margin-top: 1em;
 }
 </style>
 </head>
 <body>
+
 <div class="container">
-    <div class="col-md-12">
-        <pre data-language="html" id="output"></pre>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">DiscoTeX</a>
+            </div>
+        </div>
+    </nav>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation" id="in-link" class="active"aria-controls="" role="tab" data-toggle="tab"><a href="#in-tab" aria-controls="input" role="tab" data-toggle="tab">Input</a></li>
+        <li role="presentation" id="err-link"><a href="#err-tab" aria-controls="err" role="tab" data-toggle="tab">Errors <span class="badge"></span></a></li>
+        <li role="presentation" id="warn-link"><a href="#warn-tab" aria-controls="warn" role="tab" data-toggle="tab">Warnings <span class="badge"></span></a></li>
+        <li role="presentation" id="out-link"><a href="#out-tab" aria-controls="out" role="tab" data-toggle="tab">Output</a></li>
+        <li role="presentation" class="pull-right navbar-text" id="execTime"></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="in-tab">
+            <br/>
+            <button onclick="compile('test2.tex');" class="btn btn-primary">Compile</button>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="err-tab"></div>
+        <div role="tabpanel" class="tab-pane" id="warn-tab"></div>
+        <div role="tabpanel" class="tab-pane" id="out-tab">
+            <pre id="output"></pre>
+        </div>
     </div>
 </div>
+
 <!--<textarea id="output" rows = "20", cols="40"></textarea>
 
 </body>

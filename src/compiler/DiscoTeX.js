@@ -24,30 +24,6 @@
         };
     };
 
-    /* This function is the only entry point into the DiscoTeX
-     * compiler. Call this function with a single parameter
-     * which is the string of your TeX document. This function
-     * retruns a string which is the body of the corresponding 
-     * HTML document.
-     */
-    DT.parseDocument = function(file){
-        $.ajax({
-            type: 'GET',
-            async: true,
-            timeout: 5000,
-            url: file,
-            success: function(data, textStatus, request){
-                var start = new Date().getTime();
-                var modDate  = new Date(request.getResponseHeader('Last-Modified'));
-                var html = (new DT.Parser(data, modDate)).parse();
-                var end = new Date().getTime();
-                document.getElementById('output').innerText = html;
-                console.log('Execution time: ' + (end - start)/1000 + ' seconds')
-            }
-        });
-    };
-
-
     DT.getCmd = function(tk){
         var cmd = DT.Cmd[tk];
         if(typeof(cmd) === 'undefined'){

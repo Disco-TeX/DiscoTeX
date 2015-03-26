@@ -27,8 +27,20 @@
     }
 
     DT.Parser.prototype = {
-        logError: function(err){ this.errs.push(err); },
-        logWarning: function(w){ this.warnings.push(w); },
+        logError: function(err){ this.errs.push({
+            line: 0,
+            message: err}); },
+        logWarning: function(w){ this.warnings.push({
+            line: 0,
+            message: w}); },
+
+        getErrorLog: function(){
+            return this.errs;
+        },
+
+        getWarningLog: function(){
+            return this.warnings;
+        },
 
         pushScope: function(){
             this.state.pushScope();
@@ -439,6 +451,8 @@
         },
 
         parse: function(){
+            this.errs = [];
+            this.warnings = [];
             /* First, parse the whole document */
             var parsedString = this.parseAll(true);
 

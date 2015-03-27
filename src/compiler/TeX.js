@@ -198,17 +198,13 @@
         /* Layout (6) */
         'onecolumn' : { args: '',
             fn: function(){
-                if(this.state.columnCount === 1){
-                    return '';
-                }
 
                 //FIXME you can't just close the div and hope
                 //for the best. you need to pop a lot of stuff
                 //off the stack, and if things don't line up,
                 //through a bunch of errors.
 
-                //FIXME this works, but is inelegant. it should
-                //be hidden in a <dt-column> command
+                //FIXME this should be replaced with <dt-columns count=__ separation=__ rule=__>...</dt-column>
                 this.state.columnCount = 1;
                 var c = 'columns:' + this.state.columnCount + ';';
                 c += ' -webkit-' + c + ' -moz-' + c;
@@ -221,10 +217,6 @@
         },
         'twocolumn' : { args: '',
             fn: function(){
-                if(this.state.columnCount === 2){
-                    return '';
-                }
-
                 this.logWarning('Be careful using a two-column layout on the web. Because there are no pages, a single column can extend much further than it would on a PDF, rendering the web-document much less beautiful than it\'s PDF counterpart.');
 
                 //FIXME you can't just close the div and hope
@@ -232,6 +224,7 @@
                 //off the stack, and if things don't line up,
                 //through a bunch of errors.
 
+                //FIXME this should be replaced with <dt-columns count=__ separation=__ rule=__>...</dt-column>
                 this.state.columnCount = 2;
                 var c = 'columns:' + this.state.columnCount + ';';
                 c += ' -webkit-' + c + ' -moz-' + c;
@@ -245,21 +238,22 @@
         'columnsep' : getVariable('columnsep'),
         'columnseprule' : getVariable('columnseprule'),
 
-        'columnwidth' : '',//FIXME
-        'dbltopfraction' : { args: '', fn : ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dbltextfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnwidth': { args: '', fn: ignore('The "columnwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltopfraction' : { args: '', fn : ignore('The "dbltopfraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatpagefraction' : { args: '', fn: ignore('The "dblfloatpagefraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatsep' : { args: '', fn: ignore('The "dblfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltextfloatsep' : { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'flushbottom' : { args: '', fn: ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'raggedbottom' : { args: '', fn: ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'headheight': '', //FIXME
-        'headsep': '', //FIXME
-        'footskip': '', //FIXME
-        'linewidth': '', //FIXME
-        'textheight': '', //FIXME
-        'textwidth': '', //FIXME
-        'topmargin': '', //FIXME
-        'topskip': '', //FIXME
+
+        'headheight': { args: '', fn: ignore('The "headheight" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'headsep': { args: '', fn: ignore('The "headsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'footskip': { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'linewidth': { args: '', fn: ignore('The "linewidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textheight': { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textwidth': { args: '', fn: ignore('The "textwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topmargin': { args: '', fn: ignore('The "topmargin" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topskip': { args: '', fn: ignore('The "topskip" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Sectioning (7) */
         'section' : {

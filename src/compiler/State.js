@@ -38,6 +38,12 @@
             'columnseprule' : '0pt',
         };
 
+        /* New commands:
+         * If this is set to true, read commands literally, rather than
+         * implementing them.
+         */
+        this.commandVerbatim = false;
+
         /* Columns:
          * We need to count how many columns we are currently showing.
          * The default is 1, though maybe a document class can change

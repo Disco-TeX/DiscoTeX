@@ -13,24 +13,44 @@
             }
         };
     };
-/*    var accentFunctionBuilder = function(htmlEntityName, characterOptions, charCode){
-        return { args: 'N', fn: function(args){
-            var ch = args[0][0];
-            for(var i = 0; i < characterOptions.length; ++i){
-                if(ch === characterOptions[i]){
-                    if(typeof(charCode) === 'undefined'){
-                        return '&' + ch + htmlEntityName + ';' + args[0].slice(1);
-                    }
-                    else{
-                        return '&#' + charCode[i] + ';' + args[0].slice(1);
-                    }
+
+    var makeNewCommand = function(ast, cmd, nargs, optarg, defn){
+        if(typeof(nargs) === 'undefined' || nargs === '0'){
+            nargs = 0;
+        }
+        else{
+            nargs = parseInt(nargs);
+        }
+
+        if(nargs === 0){
+            DT.setCmd(cmd, defn);
+        }
+        else{
+            var argString = '';
+            for(var i = 0; i < nargs; ++i){
+                argString += 'N';
+            }
+            if(typeof(optarg) !== 'undefined'){
+                argString[0] = 'O';
+                if(optarg === ''){
+                    optarg = 'def'; //FIXME what am I to do with this?
                 }
             }
 
-            this.logError('Cannot accent character "' + args[0] + '"');
-            return args;
-        } };
-    };*/
+            DT.setCmd(cmd, {
+                args: argString,
+                fn: function(args){
+                    for(var i = 1; i <= 9; ++i){
+                        defn = defn.replace(new RegExp('(?:^|[^\\\\])#' + i,'g'), args[i - 1]);
+                    }
+                    return defn;
+                }
+            });
+            //do something else FIXME
+        }
+        return '';
+    };
+
 
    var translateDistance = function(dist){
        var unit = dist.match(/[^\d]+/)[0];
@@ -77,7 +97,6 @@
             return this.state.vars[varName];
         } };
     };
-
 
     var ignore = function(msg){ 
         return function(){
@@ -561,8 +580,51 @@
         'footnotesep' : '', //FIXME
 
         /* Definitions (13) */ 
-        'newcommand': '', //FIXME
-        'renewcommand': '', //FIXME
+        'newcommand': {
+            args: function(){
+                var returnArgs = [];
+
+                this.state.commandVerbatim = true;
+                var arg1 = this.getNormalArgument();
+
+                if(arg1 === '*'){
+                    returnArgs.push('*');
+                    returnArgs.push(this.getNormalArgument());
+                }
+                else{
+                    returnArgs.push(undefined);
+                    returnArgs.push(arg1);
+                }
+                this.state.commandVerbatim = false;
+
+                returnArgs.push(this.getOptionalArgument());
+                returnArgs.push(this.getOptionalArgument());
+                returnArgs.push(this.getNormalArgument());
+
+                return returnArgs;
+            },
+
+            fn: function(args){
+                //Check if the command was already defined.
+                if(DT.hasCmd(args[1])){
+                    this.logError('The command "" has already been defined. Try using "renewcommand".');
+                    return '';
+                }
+
+                return makeNewCommand(args[0], args[1], args[2], args[3], args[4]);
+            }
+        },
+        'renewcommand': {
+            args: DT['newcommand'],
+            fn: function(args){
+                //Check if the command was already defined.
+                if(!DT.hasCmd(args[1])){
+                    this.logError('The command "" has not yet been defined. Try using "newcommand".');
+                    return '';
+                }
+                return makeNewCommand(args[0], args[1], args[2], args[3], args[4]);
+            }
+        },
         'newcounter': '', //FIXME
         'newlength': '', //FIXME
         'newsavebox': '', //FIXME
@@ -1005,16 +1067,16 @@
                 return '';
             }
         },
-        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
-        'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
-        'ifdisco' : { args: 'NN',
-            fn: function(args){
-                //FIXME make it so the second parameter's errors are ignored
-                //Maybe do this with a coroutine and suspending warning logs between the second parameter?
-                return args[0];
-            }
-
-        }
+//        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
+//        //'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
+//        'ifdisco' : { args: 'NN',
+//            fn: function(args){
+//                //FIXME make it so the second parameter's errors are ignored
+//                //Maybe do this with a coroutine and suspending warning logs between the second parameter?
+//                return args[0];
+//            }
+//
+//        }
     };
 
         DT.Env = {

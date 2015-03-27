@@ -2,7 +2,7 @@
     /* Local private functions */
     var DefaultCmd = function(name){
         return {
-            args: [],
+            args: '',
             fn: function(args){
                 this.logError('Unknown command "' + name + '"');
                 return '<dt-bad-cmd name="' + name + '"></dt-bad-cmd>';
@@ -11,7 +11,7 @@
     };
 
     var DefaultEnv = function(name){
-        return { args: [],
+        return { args: '' ,
             align: function(){ return ' & '; }, //Calm the compiler. This is probably not what we want to do
             begin: function(args){
                 this.logError('Unknown environment "' + name + '"');
@@ -57,13 +57,21 @@
         return cmd;
     };
 
+    DT.hasCmd = function(tk){
+        return typeof(DT.Cmd[tk]) !== 'undefined';
+    };
+
+    DT.setCmd = function(tk, cmdData){
+        DT.Cmd[tk] = cmdData;
+    };
+
     DT.getEnv = function(tk){
         var env= DT.Env[tk];
         if(typeof(env) === 'undefined'){
             env = DefaultEnv(tk);
         }
         return env;
-    }
+    };
 
     DT.addPackage = function(pkg){
         for(cmd in pkg.Cmd){

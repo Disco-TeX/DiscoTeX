@@ -110,6 +110,9 @@
 
 
         parseCommand: function(tk, doParagraphCheck){
+            if(this.state.commandVerbatim){
+                return tk.token;
+            }
             /* Get the command with the same name as the token. If the command
              * doesn't exist, then this function will assign the default command
              * to the variable cmd, so we can still do something sensible.

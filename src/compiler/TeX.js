@@ -72,6 +72,13 @@
         } };
     };
 
+    var getVariable = function(varName){
+        return { args: 'N', fn: function(args){
+            return this.state.vars[varName];
+        } };
+    };
+
+
     var ignore = function(msg){ 
         return function(){
             if(typeof(msg) !== 'undefined'){
@@ -189,18 +196,65 @@
         /* Low-level font commands (5.3) */ //FIXME do this
 
         /* Layout (6) */
-        'onecolumn' : '', // This is intentionally ignored, because two-column layouts are not supported by DiscoTeX
-        'twocolumn' : { args: 'O', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'columnsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'columnseprule' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'columnsepwidth' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dbltopfraction' : { args: '', fn : ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatpagefraction' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dbltextfloatsep' : { args: '', fn: ignore('Multiple column layouts are not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'onecolumn' : { args: '',
+            fn: function(){
+
+                //FIXME you can't just close the div and hope
+                //for the best. you need to pop a lot of stuff
+                //off the stack, and if things don't line up,
+                //through a bunch of errors.
+
+                //FIXME this should be replaced with <dt-columns count=__ separation=__ rule=__>...</dt-column>
+                this.state.columnCount = 1;
+                var c = 'columns:' + this.state.columnCount + ';';
+                c += ' -webkit-' + c + ' -moz-' + c;
+                var cg = 'column-gap:' + translateDistance(this.state.vars['columnsep']) + ';';
+                cg += ' -webkit-' + cg + ' -moz-' + cg;
+                var cr = 'column-rule:' + translateDistance(this.state.vars['columnseprule']) + ';';
+                cr += ' -webkit-' + cr + ' -moz-' + cr;
+                return '</div>\n<div style="' + [c, cg, cr].join(' ') +  '">';
+            }
+        },
+        'twocolumn' : { args: '',
+            fn: function(){
+                this.logWarning('Be careful using a two-column layout on the web. Because there are no pages, a single column can extend much further than it would on a PDF, rendering the web-document much less beautiful than it\'s PDF counterpart.');
+
+                //FIXME you can't just close the div and hope
+                //for the best. you need to pop a lot of stuff
+                //off the stack, and if things don't line up,
+                //through a bunch of errors.
+
+                //FIXME this should be replaced with <dt-columns count=__ separation=__ rule=__>...</dt-column>
+                this.state.columnCount = 2;
+                var c = 'columns:' + this.state.columnCount + ';';
+                c += ' -webkit-' + c + ' -moz-' + c;
+                var cg = 'column-gap:' + translateDistance(this.state.vars['columnsep']) + ';';
+                cg += ' -webkit-' + cg + ' -moz-' + cg;
+                var cr = 'column-rule:' + translateDistance(this.state.vars['columnseprule']) + ' solid #000;';
+                cr += ' -webkit-' + cr + ' -moz-' + cr;
+                return '</div>\n<div style="' + [c, cg, cr].join(' ') +  '">';
+            }
+        },
+        'columnsep' : getVariable('columnsep'),
+        'columnseprule' : getVariable('columnseprule'),
+
+        'columnwidth': { args: '', fn: ignore('The "columnwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltopfraction' : { args: '', fn : ignore('The "dbltopfraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatpagefraction' : { args: '', fn: ignore('The "dblfloatpagefraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatsep' : { args: '', fn: ignore('The "dblfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltextfloatsep' : { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'flushbottom' : { args: '', fn: ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'raggedbottom' : { args: '', fn: ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        
+
+        'headheight': { args: '', fn: ignore('The "headheight" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'headsep': { args: '', fn: ignore('The "headsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'footskip': { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'linewidth': { args: '', fn: ignore('The "linewidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textheight': { args: '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textwidth': { args: '', fn: ignore('The "textwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topmargin': { args: '', fn: ignore('The "topmargin" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topskip': { args: '', fn: ignore('The "topskip" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+
         /* Sectioning (7) */
         'section' : {
             args: function(){
@@ -1011,12 +1065,12 @@
                 }
             },
 
-           'document' : {
+           'document' : { //THIS IS A MASSIVE HACK. FIXME. Move it to the document class
                 begin: function(eid){
-                    return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">';
+                    return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">';
                 },
                 end: function(){
-                    return '</div>' + this.setDisplay(false);
+                    return '</div>\n</div>' + this.setDisplay(false);
                 }
             },
 

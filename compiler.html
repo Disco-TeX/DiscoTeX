@@ -12,9 +12,7 @@
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <!-- MathJax -->
-<script type="text/javascript"
-src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 
 <!-- DiscoTeX -->
@@ -29,21 +27,31 @@ src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLor
 
 <script>
 window.onload = function(){
-    $('#in-link a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
+    var activeLink = 'in';
+
+    var clickLink = function(newLink){
+//        console.log(document.getElementById(activeLink + '-link').className.split(/\s+/));
+//        $(activeLink + '-link').removeClass('active');
+//        activeLink = newLink;
+//        $(activeLink + '-link').addClass('active');
+//        console.log(document.getElementById(activeLink + '-link').className.split(/\s+/));
+
+    }
+
+    $('#in-link a').click(function (e){
+            e.preventDefault();
+            clickLink('in');
+            $('#content').html('input');
             });
-    $('#err-link a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
+    $('#err-link a').click(function (e){
+            e.preventDefault();
+            clickLink('err');
+            $('#content').html('error');
             });
-    $('#warn-link a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-            });
-    $('#out-link a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
+    $('#out-link a').click(function (e){
+            e.preventDefault();
+            clickLink('out');
+            $('#content').html('output');
             });
 }
 
@@ -89,39 +97,39 @@ $('#execTime').text('Compilation time: ' + ((end - start) / 1000) + ' seconds');
 }
 </script>
 <style type="text/css">
-nav, pre{
-    margin-top: 1em;
+body{
+    padding-top: 70px;
 }
+
 </style>
 </head>
 <body>
-
-<div class="container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">DiscoTeX</a>
-            </div>
-        </div>
-    </nav>
-
-    <ul class="nav nav-tabs">
-        <li role="presentation" id="in-link" class="active"aria-controls="" role="tab" data-toggle="tab"><a href="#in-tab" aria-controls="input" role="tab" data-toggle="tab">Input</a></li>
-        <li role="presentation" id="err-link"><a href="#err-tab" aria-controls="err" role="tab" data-toggle="tab">Errors/Warnings <span class="badge"></span></a></li>
-        <li role="presentation" id="out-link"><a href="#out-tab" aria-controls="out" role="tab" data-toggle="tab">Output</a></li>
-        <li role="presentation" class="pull-right navbar-text" id="execTime"></li>
-    </ul>
-
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="in-tab">
-            <br/>
-            <button onclick="compile('test2.tex');" class="btn btn-primary">Compile</button>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="err-tab"></div>
-        <div role="tabpanel" class="tab-pane" id="out-tab">
-            <pre id="output"></pre>
-        </div>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="htpps://disco-tex.github.io/DiscoTeX">\(\mathrm{Disco\!\TeX}\)</a>
     </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+          <li id="in-link"><a href="">Input</a></li>
+          <li id="err-link"><a href="">Errors/Warnings</a></li>
+          <li id="out-link"><a href="">Output</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container-fluid">
+    <div id="content"></div>
 </div>
 
 <!--<textarea id="output" rows = "20", cols="40"></textarea>

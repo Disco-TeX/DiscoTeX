@@ -29,9 +29,9 @@
          * store them here.
          */
         this.counter = {
-            'section': 0,
-            'subsection': 0,
-            'subsubsection': 0
+            'section': { val: 0, resets: ['subsection', 'subsubsection'] },
+            'subsection': { val: 0, resets: ['subsubsection'] },
+            'subsubsection': { val: 0, resets: [] }
         };
         this.vars = {
             'columnsep' : '35pt',
@@ -161,7 +161,7 @@
             this.scopeStack[this.scopeStack.length - 1].push(d);
         },
 
-        //seciton label stuff
+        //section label stuff
 
         pushSectionLabel: function(){
             var lbl = this.labelStack[this.labelStack.length - 1];
@@ -169,9 +169,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-            ++this.counter['section'];
-            this.counter['subsection'] = 0;
-            this.counter['subsubsection'] = 0;
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['section']);//FIXME this is a hack, the state should point to the parser
             this.labelStack.push({type: 'sec', label: this.getSectionString(0) });
         },
 
@@ -181,9 +179,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-
-            ++this.counter['subsection'];
-            this.counter['subsubsection'] = 0;
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['subsection']);
             this.labelStack.push({type: 'sec', label: this.getSectionString(1) });
         },
 
@@ -193,7 +189,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-            ++this.counter['subsubsection'];
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['subsubsection']);
             this.labelStack.push({type: 'sec', label: this.getSectionString(2) });
         },
 

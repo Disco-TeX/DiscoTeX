@@ -78,10 +78,6 @@
         return num.toString() + 'pt';
     };
 
-    var getCounterValue = function(name){
-        return this.state.counter[name].val;
-    };
-
     var spanClassBuilder = function(className){
         return { args : 'N', fn: function(args){
             return '<span class="' + className + '">' + args[0] + '</span>';
@@ -684,748 +680,733 @@
         },
         'setcounter' : { args : 'NN',
             fn: function(args){
-                this.state.counter[ args[0] ].val = parseInt(args[1]);
+                this.state.setCounter(args[0], parseInt(args[1]));
                 return '';
             }
         },
         'addtocounter' : { args : 'NN',
             fn: function(args){
-                this.state.counter[ args[0] ].val += parseInt(args[1]);
+                this.state.setCounter(args[0], this.getCounterValue(args[0]) + parseInt(args[1]));
                 return '';
             }
         },
         'refstepcounter' : { args : 'N',
             fn: function(args){
-                /* We can't just call stepcounter() because this
-                 * should still work if that command gets redefiend.
-                 */
-                this.state.counter[ args[0] ].val++;
-                this.state.counter[ args[0] ].resets.forEach(function(el){
-                        /* We can't just call setcounter(el, 0) because this
-                         * should still work if that command gets redefiend.
-                         */
-                this.state.counter[ el ].val = 0;
-            }, this);
-            //FIXME make this counter visible to the \ref{...} command
-        }
-    },
-    'stepcounter' : { args : 'N',
-        fn: function(args){
-            this.state.counter[ args[0] ].val++;
-            this.state.counter[ args[0] ].resets.forEach(function(el){
-                /* We can't just call setcounter(el, 0) because this
-                 * should still work if that command gets redefiend.
-                 */
-                    this.state.counter[ el ].val = 0;
-                    }, this);
-            return '';
-        }
-    },
-    'day' : { args : '',
-        fn: function(){
-            return this.state.lastModified.getDate();
-        }
-    },
-    'month' : { args : '',
-        fn: function(){
-            return this.state.lastModified.getMonth() + 1;
-        }
-    },
-    'year' : { args : '',
-        fn: function(){
-            return this.state.lastModified.getFullYear();
-        }
-    },
-
-    /* Lengths (15) */ //FIXME
-
-    /* Making Paragraphs (16) */ //FIXME
-
-    /* Math Formulas (17) */ //FIXME
-
-    /* Modes (18) ... nothing here */
-
-    /* Page styles (19) */
-    'maketitle': {args : '',
-        fn: function(){
-            var title = this.getVariable('title');
-            var author = this.getVariable('author');
-            var date = this.getVariable('date');
-
-            var output = '<dt-heading>';
-            if(typeof(title) !== 'undefined'){
-                output += '\n<h1>' + title + '</h1>';
+                this.state.stepCounter(args[0]);
+                //FIXME make this counter visible to the \ref{...} command
             }
-
-            if(typeof(author) !== 'undefined'){
-                output += '\n<h3>' + author + '</h3>';
-            }
-
-            if(typeof(date) !== 'undefined'){
-                output += '\n<h5>' + date + '</h5>';
-            }
-
-            output += '\n</dt-heading>';
-            return output;
-        }
-    },
-    'author': setVariable('author'),
-    'date': setVariable('date'),
-    'thanks': setVariable('thanks'),
-    'title': setVariable('title'),
-
-
-    'pagenumbering' : { args : 'N', fn: ignore('The "pagenumbering" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-    'pagestyle' : { args : 'N', fn: ignore('The "pagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-    'thispagestyle' : { args : 'N', fn: ignore('The "thispagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-
-    /* Spaces (20) */
-    'hspace' : {
-        args : function(){
-            /* The asterisk tells LaTeX not to start a new page
-             * on the PDF, so we ignore it. We don't even send
-             * it to the command function.
-             */
-                   if(this.stream.peek() === '*'){
-                       this.getNormalArgument(); //ignore the asterisk
-                   }
-
-                   return [this.getNormalArgument()];
-               },
-fn: function(args){
-        return '<span style="width:' + translateDistance(args[0]) + ';"></span>';
-    }
-    },
-    'hfill' : '', //FIXME
-    'SPACE' : '&nbsp;',
-
-    /* The '\@' command makes the next punctuation character end
-     * a sentence. As far as I can tell, there is no way to do
-     * this with CSS. It's probably used rarely, that it's not
-     * worth it. Regardless, we'll leave a FIXME tag here, so we
-     * can find it later.
-     */
-    '@' : ignore(),
-    'thinspace' : '&thinsp;',
-    /* The '\/' command corrects spacing where an italic section
-     * ends and an upright section begins. HTML + CSS may do this
-     * automatically... I have no idea. This is low-priority, but
-     * still gets a FIXME tag in case we decide to deal with it.
-     */
-    '/' : '',
-    'hrulefill' : '', //FIXME
-    'dotfill' : '', //FIXME
-    'addvspace' : '', //FIXME
-    'bigskip' : '', //FIXME
-    'medskip' : '', //FIXME
-    'smallskip' : '', //FIXME
-    'vfill' : '', //FIXME
-    'vspace' : {
-args : function(){
-           /* The asterisk tells LaTeX not to start a new page
-            * on the PDF, so we ignore it. We don't even send
-            * it to the command function.
-            */
-           if(this.stream.peek() === '*'){
-               this.getNormalArgument(); //ignore the asterisk
-           }
-
-           return [this.getNormalArgument()];
-       },
-fn: function(args){
-        return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
-    }
-    },
-
-    /* Boxes (21) */
-    'mbox' : { args : 'N', 
-        fn: function(args){
-            return '<span class="mbox">' + args[0] + '</span>';
-        }
-    },
-    'fbox' : { args : 'OON',
-        fn: function(args){
-            return '<span class="fbox">' + args[2] + '</span>';
-        }
-    },
-    'framebox' : { args : 'OON',
-        fn: function(args){
-            return '<span class="fbox">' + args[2] + '</span>';
-        }
-    },
-    'makebox' : '', //FIXME
-    'parbox' : '', //FIXME
-    'raisebox' : '', //FIXME
-    'savebox' : '', //FIXME
-    'sbox' : '', //FIXME
-    'usebox' : '', //FIXME
-
-
-    /* Reserved characters (22.1) */
-    '#' : '#',
-    '$' : '$',
-    '%' : '%',
-    '&' : '&amp;',
-    '_' : '_',
-    '{' : '{',
-    '}' : '}',
-
-    /* Symbols (22.2) */
-    'copyright' : '&copy;',
-    'dag' : '&dagger;',
-    'ddag' : '&Dagger;',
-    'LaTeX' : '\\(\\mathrm{\\LaTeX}\\)',
-    'dots' : '&hellip;',
-    'ldots' : '&hellip;', 
-    'textellipsis' : '&hellip;',
-    'lq' : '&lsquo;', 
-    'P' : '&para;',
-    'textparagraph' : '&para;',
-    'rq' : '&rsquo;',
-    'S' : '&sect;',
-    'TeX' : '\\(\\mathrm{\\TeX}\\)',
-    'textasciicircum' : '^',
-    'textasciitilde' : '~',
-    'textasteriskcentered' : '*',
-    'textbar' : '|',
-    'textbardbl' : '&#8214;',
-    'textbigcircle' : '&#9675;',
-    'textbraceleft' : '{',
-    'textbraceright' : '}',
-    'textbullet' : '&bull;',
-    'textcircled' : { args : 'N',
-        fn: function(args){
-            //FIXME this is not ideal, but for now it's good enough
-            return '<span class="circled">' + (args[0].length === 0 ? '&nbsp;' : args[0][0]) + '</span>' + args[0].slice(1);
-        }
-    },
-    'textcompwordmark' : '&#8291;', //This command is used to separate ligatures
-    'textcapitalwordmark' : '&#8291;', //This command is used to separate ligatures
-    'textascenderwordmark' : '&#8291;', //This command is used to separate ligatures
-    'textdagger' : '&dagger;',
-    'textdaggerdbl' : '&Dagger;',
-    'textdollar' : '$',
-    'textemdash' : '&mdash;',
-    'textendash' : '&ndash;',
-    'textexclamdown' : '&iexcl;',
-    'textgreater' : '&gt;',
-    'textless' : '&lt;',
-    'textleftarrow' : '&larr;',
-    'textordfeminine' : '&ordf;',
-    'textordmasculine' : '&ordm;',
-    'textquestiondown' : '&iquest;',
-    'textquotedblleft' : '&ldquo;',
-    'textquotedblright' : '&rdquo;',
-    'textquoteleft' : '&lsquo;',
-    'textquoteright' : '&rsquo;',
-    'textregistered' : '&reg;',
-    'texttrademark' : '&trade;',
-    'textunderscore' : '_',
-    'textvisiblespace' : '&blank;',
-
-    /* Accented characters (22.3) */
-    '`' : accentBuilder(768),
-    '\'' : accentBuilder(769),
-    '^' : accentBuilder(770),
-    '~' : accentBuilder(771),
-    '=' : accentBuilder(772),
-    'u' : accentBuilder(774),
-    '.' : accentBuilder(775),
-    '"' : accentBuilder(776),
-    'r' : accentBuilder(778),
-    'H' : accentBuilder(779),
-    'v' : accentBuilder(780),
-    'd' : accentBuilder(803), //FIXME in a group, displays in the middle
-    'c' : accentBuilder(807),
-    'b' : accentBuilder(817), //FIXME In a group, displays in the middle
-    't' : accentBuilder(865), //FIXME doesn't display properly
-
-    /* Non-english characters (22.4) */
-    'AA' : '&Aring;',
-    'aa' : '&aring;',
-    'AE' : '&AElig;',
-    'ae' : '&aelig;',
-    'IJ' : '&IJlig;',
-    'ij' : '&ijlig;',
-    'l' : { args : 'N', fn: function(){ return '&#321'; } },
-    'L' : { args : 'N', fn: function(){ return '&#322'; } },
-    'O' : '&Oslash;',
-    'o' : '&oslash;',
-    'OE' : '&OElig;',
-    'oe' : '&oelig;',
-    'ss' : '&szlig;',
-    'SS' : 'SS',
-
-    /* Rules (22.5 & 22.6) */
-    'rule' : { args : 'ONN', //FIXME
-        fn: function(){
-            return '<hr/>';
-        }
-    },
-
-    'today' : { args : '',
-        fn: function(){
-            /* Returns the date the document was modified */
-            return this.state.lastModified.toLocaleString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
-        }
-    },
-
-    /* Splitting the input (23) */
-    'include' : { args : 'N', fn: ignore() }, //FIXME
-    'includeonly' : { args : 'N', fn: ignore() }, //FIXME
-    'input' : { args : 'N', fn: ignore() }, //FIXME
-
-    /* Front/Back Matter (24) */
-    'addcontentsline' : { args : 'NNN', fn: ignore() }, //FIXME
-    'addcontents' : { args : 'NN', fn: ignore() }, //FIXME
-    'glossary' : { args : 'N', fn: ignore() }, //FIXME
-    'makeindex' : '', //FIXME
-    'index' : { args : 'N', fn: ignore() }, //FIXME
-    'indexentry' : { args : 'NN', fn: ignore() }, //FIXME
-    'tableofcontents' : { args : '', fn: function(){ this.state.hasTOC = true; return ''; } },
-
-    /* Letters (25) */ //FIXME
-
-    /* Terminal I/O (26) */ //FIXME
-
-    /* Command line (27) */ //FIXME
-
-
-
-
-    /* Everything else */
-    'bibitem' : { args : 'N',
-        fn: function(args){
-            return '<dt-bibitem label="' + args[0] + '"></dt-bibitem>';
-        }
-    },
-
-    'bibliographystyle': {args : 'N', fn: ignore() }, //FIXME
-
-    'caption' : { args : 'N',
-        fn: function(args){
-            return '<p class="caption">' + args[0] + '</p>'
-        }
-    },
-
-    'centering' : { args : '',
-        fn: function(){
-            this.state.addDefer('</div>');
-            return '<div class="centering">';
-        }
-    },
-
-    'cite' : { args : 'N',
-        fn: function(args){
-            return '<dt-cite label="' + args[0] + '"></dt-cite>'
-        }
-    },
-
-
-    'href' : { args : 'NN',
-        fn: function(args){
-            return '<a href="' + args[0] + '">' + args[1] + '</a>';
-        }
-    },
-
-    'includegraphics' : { args : 'ON',
-        fn: function(args){
-            //FIXME work with all options
-
-            var opts = args[0].split(',');
-            var htmlOptions = '';
-            opts.forEach(function(el){
-                var option = el.split('=');
-                if(option[0] === 'scale'){
-                    var scale = Math.round(parseFloat(option[1]) * 100);
-                    htmlOptions += ' width="' + scale + '%"';
-                }
-            })
-
-            return '<img ' + htmlOptions + 'src="' + args[1] + '" />';
-        }
-    },
-
-    'item' : { args : '',
-        inParagraph: false,
-        fn: function(){
-            var e = this.state.environmentStack[this.state.environmentStack.length - 1];
-            if(typeof(e.environment.item) !== 'undefined'){
-                return e.environment.item.call(this, ++e.itemCount);
-            }
-
-            this.logError('"item" command used outside of a listing environment');
-            return '';
-        }
-    },
-
-    'title' : setVariable('title'),
-
-    'url' : { args : 'N',
-        fn: function(args){
-            return '<a href="' + args[0] + '">' + args[0] + '</a>';
-        }
-    },
-
-    'verb' : {
-        args : function(){
-            var ccdb = this.state.catcodeDB;
-            //set to default
-            this.state.resetCatcodes();
-            //then make everything a letter
-            this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%', '`', '\'', '"', '[', ']'], DT.CATCODE.LETTER);
-
-            var args = [];
-            var nextArg = '';
-            var endVerb;
-
-            var ast = false;
-            var asteriskOrFirst = this.getNormalArgument();
-            if(asteriskOrFirst === '*'){
-                ast = true;
-                endVerb = this.getNormalArgument();
-            }
-            else{
-                endVerb = asteriskOrFirst;
-            }
-
-            while(nextArg !== endVerb){
-                args.push(nextArg);
-                nextArg = this.getNormalArgument();
-            }
-
-            this.state.catcodeDB = ccdb;
-
-            return [ast, args.join('')];
         },
-        fn: function(args){
-            if(args[0]){
-                return '<code>' + args[1].replace(/ /g,'&blank;') + '</code>';
+        'stepcounter' : { args : 'N',
+            fn: function(args){
+                this.state.stepCounter(args[0]);
+                return '';
             }
-            else{
-                return '<code>' + args[1] + '</code>';
+        },
+        'day' : { args : '',
+            fn: function(){
+                return this.state.lastModified.getDate();
             }
-        }
-    },
-
-    '[' : {
-        args : function(){
-            var ccdb = this.state.catcodeDB;
-
-            //set to default
-            this.state.resetCatcodes();
-            //then make everything a letter
-            this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%'], DT.CATCODE.LETTER);
-
-            var endFlag = 0;
-            var leader = '';
-            var arg = '';
-            while(endFlag < 2){
-                var next = this.getNormalArgument();
-                var isLeader = (ccdb[next] === DT.CATCODE.ESC || (typeof(ccdb[next]) === 'undefined' && next === '\\')); //FIXME magic leader (\\ is the default leader)
-                if(endFlag === 0 && isLeader){
-                    leader = next;
-                    ++endFlag;
-                    continue;
-                }
-
-                if(endFlag === 1 && next === ']'){
-                    ++endFlag;
-                    continue;
-                }
-
-                if(endFlag === 1){
-                    arg += leader;
-                }
-                endFlag = 0;
-                arg += next;
+        },
+        'month' : { args : '',
+            fn: function(){
+                return this.state.lastModified.getMonth() + 1;
             }
-
-            this.state.catcodeDB = ccdb;
-
-            return [arg];
+        },
+        'year' : { args : '',
+            fn: function(){
+                return this.state.lastModified.getFullYear();
+            }
         },
 
-        fn: function(args){
-            return '\\[' + args[0] + '\\]';
-        }
-    },
+        /* Lengths (15) */ //FIXME
 
-    /* These commands are not TeX or LaTeX standards
-     * They are provided by the DiscoTeX package.
-     */
+        /* Making Paragraphs (16) */ //FIXME
 
-    'dtcollapse' : { args : '',
-        fn: function(){
-            this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
-            return '';
-        }
-    },
-    'dtnocollapse' : '',
-    'dtstartcollapsed' : { args : '',
-        fn: function(){
-            this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
-            return '';
-        }
-    },
-    //        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
-    //        //'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
-    'ifdisco' : { args : 'NN',
-        fn: function(args){
-            //FIXME make it so the second parameter's errors are ignored
-            //Maybe do this with a coroutine and suspending warning logs between the second parameter?
-            return args[0];
-        }
+        /* Math Formulas (17) */ //FIXME
 
-    }
-            };
+        /* Modes (18) ... nothing here */
 
-            DT.Env = {
-                'abstract' : {
-begin: function(){
-           return '<dt-abstract>';
-       },
+        /* Page styles (19) */
+        'maketitle': {args : '',
+            fn: function(){
+                var title = this.getVariable('title');
+                var author = this.getVariable('author');
+                var date = this.getVariable('date');
 
-end: function(){
-         return '</dt-abstract>';
-     }
-                },
+                var output = '<dt-heading>';
+                if(typeof(title) !== 'undefined'){
+                    output += '\n<h1>' + title + '</h1>';
+                }
 
-                'description' : {
-internalParagraphs: false,
-                    begin: function(){
-                        return '<dl class="dl-horizontal">';
-                    },
-end: function(e){
-         var output = '</dl>';
-         if(e.itemCount !== 0){
-             output = '</dd>\n' + output;
-         }
-         return output;
-     },
-item: function(count){
-          var opt = this.getOptionalArgument();
-          if(typeof(opt) === 'undefined'){
-              opt = '';
-          }
+                if(typeof(author) !== 'undefined'){
+                    output += '\n<h3>' + author + '</h3>';
+                }
 
-          if(count === 1){
-              return '<dt>' + opt + '</dt>\n<dd>';
-          }
-          else{
-              return '</dd>\n<dt>' + opt + '</dt>\n<dd>';
-          }
-      }
-                },
+                if(typeof(date) !== 'undefined'){
+                    output += '\n<h5>' + date + '</h5>';
+                }
 
-                'center' : {
-internalParagraphs: false,
-                    begin: function(){
-                        return '<div style="text-align:center;">';
-                    },
-end: function(){
-         return '</div>';
-     }
-                },
-
-                'document' : { //THIS IS A MASSIVE HACK. FIXME. Move it to the document class
-begin: function(eid){
-           return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">';
-       },
-end: function(){
-         return '</div>\n</div>' + this.setDisplay(false);
-     }
-                },
-
-                'enumerate' : {
-internalParagraphs: false,
-                    begin: function(){
-                        return '<ol>';
-                    },
-end: function(e){
-         var output = '</ol>';
-         if(e.itemCount > 0){
-             output = '</li>\n' + output;
-         }
-         return output;
-     },
-item: function(count){
-          if(count === 1){
-              return '<li>';
-          }
-          else{
-              return '</li>\n<li>';
-          }
-      }
-                },
-
-                'equation' : {
-parse: function(eid, args, content){
-           var labelRegExp = new RegExp('\\\\label{(.+)}');
-           var labelMatch = content.match(labelRegExp);
-           var tagRegExp = new RegExp('\\\\tag{(.+)}');
-           var tagMatch = content.match(tagRegExp);
-           /* Because we can look at the internals of the entire equation environment,
-            * we can actually get the label here. This means that we don't need to
-            * register the label with the parser state, or put in a back-reference, or
-            * anything else fancy. We can just insert it now as is.
-            *
-            * This is maybe a little dangerous, because we're working with a special
-            * case. If this turns out to be ugly, we'll go back and do it in the
-            * consistent way: with back-references.
-            */
-           var output = '<dt-equation'
-               if(labelMatch !== null){
-                   output += ' label="' + labelMatch[1] + '"';
-               }
-           if(tagMatch !== null){
-               output += ' tag="' + tagMatch[1] + '"';
-           }
-           output += '>' + content.replace(labelRegExp, '').replace(tagRegExp, '');
-           return output + '</dt-equation>';
-       }
-                },
-
-                'eqnarray' : {
-parse: function(eid, args, content){
-           this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray environment');
-           return 'MATHJAX'; //FIXME
-       }
-                },
-
-                'eqnarray*' : {
-parse: function(eid, args, content){
-           this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray* environment');
-           return 'MATHJAX'; //FIXME
-       }
-                },
-
-                'flushleft' : {
-begin: function(){
-           return '<div style="text-align:left;">';
-       },
-end: function(){
-         return '</div>';
-     }
-                },
-
-                'flushright' : {
-                    //FIXME for whatever reason this doesn't right align things the way it's supposed to
-begin: function(){
-           return '<div class="text-align:right;">';
-       },
-end: function(){
-         return '</div>';
-     }
-                },
+                output += '\n</dt-heading>';
+                return output;
+            }
+        },
+        'author': setVariable('author'),
+        'date': setVariable('date'),
+        'thanks': setVariable('thanks'),
+        'title': setVariable('title'),
 
 
-                'itemize' : {
-internalParagraphs: false,
-                    begin: function(){
-                        return '<ul>';
-                    },
-end: function(e){
-         var output = '</ul>';
-         if(e.itemCount > 0){
-             output = '</li>\n' + output;
-         }
-         return output;
-     },
-item: function(count){
-          if(count === 1){
-              return '<li>';
-          }
-          else{
-              return '</li>\n<li>';
-          }
-      }
-                },
+        'pagenumbering' : { args : 'N', fn: ignore('The "pagenumbering" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagestyle' : { args : 'N', fn: ignore('The "pagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'thispagestyle' : { args : 'N', fn: ignore('The "thispagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
-                'quote' : {
-begin: function(eid){
-           return '<blockquote>';
-       },
-end: function(eid){
-         return '</blockquote>';
-     }
-                },
+        /* Spaces (20) */
+        'hspace' : {
+            args : function(){
+                /* The asterisk tells LaTeX not to start a new page
+                 * on the PDF, so we ignore it. We don't even send
+                 * it to the command function.
+                 */
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
 
-                'quotation' : {
-begin: function(eid){
-           return '<blockquote class="indent">';
-       },
-end: function(eid){
-         return '</blockquote>';
-     }
-                },
+                return [this.getNormalArgument()];
+            },
+            fn: function(args){
+                return '<span style="width:' + translateDistance(args[0]) + ';"></span>';
+            }
+        },
+        'hfill' : '', //FIXME
+        'SPACE' : '&nbsp;',
 
-    'tabular' : {
-args : 'ON',
-       internalParagraphs: false,
-       begin: function(eid){
-           this.state.setEnvironmentData(eid, 'cmd', {'\\' : DT.getCmd('\\'), 'hline' : DT.getCmd('hline') });
-
-           //FIXME this should be a call to DT.setCmd
-           DT.Cmd['\\'] = '</td></tr>\n<tr><td>';
-           DT.Cmd['hline'] = ''; //FIXME should i really ignore this?
-
-           return '<table class="table table-hover">\n<tr>\n<td>';
-       },
-end: function(eid){
-         //FIXME this should be a call to DT.setCmd
-         DT.Cmd['\\'] = this.state.getEnvironmentData(eid, 'cmd')['\\'];
-         DT.Cmd['hline'] = this.state.getEnvironmentData(eid, 'cmd')['hline'];
-
-         return '</td></tr></table>';
-     },
-align: function(colNumber){
-           return '</td><td>';
-       }
-
-    },
-
-    'thebibliography' : {
-        /* This argument is the width of the widest label, which TeX
-         * uses to deal with spacing. HTML makes spacing easier, so
-         * we simply read this argument and completely ignore it.
+        /* The '\@' command makes the next punctuation character end
+         * a sentence. As far as I can tell, there is no way to do
+         * this with CSS. It's probably used rarely, that it's not
+         * worth it. Regardless, we'll leave a FIXME tag here, so we
+         * can find it later.
          */
-args : 'N',
-       internalParagraphs: false,
-       begin: function(eid, args){
-           return '<dt-bibliography>';
-       },
+        '@' : ignore(),
+        'thinspace' : '&thinsp;',
+        /* The '\/' command corrects spacing where an italic section
+         * ends and an upright section begins. HTML + CSS may do this
+         * automatically... I have no idea. This is low-priority, but
+         * still gets a FIXME tag in case we decide to deal with it.
+         */
+        '/' : '',
+        'hrulefill' : '', //FIXME
+        'dotfill' : '', //FIXME
+        'addvspace' : '', //FIXME
+        'bigskip' : '', //FIXME
+        'medskip' : '', //FIXME
+        'smallskip' : '', //FIXME
+        'vfill' : '', //FIXME
+        'vspace' : {
+            args : function(){
+                /* The asterisk tells LaTeX not to start a new page
+                 * on the PDF, so we ignore it. We don't even send
+                 * it to the command function.
+                 */
+                if(this.stream.peek() === '*'){
+                    this.getNormalArgument(); //ignore the asterisk
+                }
 
-end: function(){
-         return '</dt-bibliography>';
-     }
-    },
+                return [this.getNormalArgument()];
+            },
+            fn: function(args){
+                return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
+            }
+        },
 
-    'titlepage' : {
-args : '',
-       begin: function(eid){
-           return '<dt-titlepage>';
-       },
-end: function(){
-         return '</dt-titlepage>';
-     }
-    },
+        /* Boxes (21) */
+        'mbox' : { args : 'N', 
+            fn: function(args){
+                return '<span class="mbox">' + args[0] + '</span>';
+            }
+        },
+        'fbox' : { args : 'OON',
+            fn: function(args){
+                return '<span class="fbox">' + args[2] + '</span>';
+            }
+        },
+        'framebox' : { args : 'OON',
+            fn: function(args){
+                return '<span class="fbox">' + args[2] + '</span>';
+            }
+        },
+        'makebox' : '', //FIXME
+        'parbox' : '', //FIXME
+        'raisebox' : '', //FIXME
+        'savebox' : '', //FIXME
+        'sbox' : '', //FIXME
+        'usebox' : '', //FIXME
 
-    'verse' : {
-args : '',
-       begin: function(eid){
-           return '<dt-verse>';
-       },
-end: function(){
-         return '</dt-verse>';
-     }
-    },
 
-    'verbatim' : {
-internalParagraphs: false,
-                    parse: function(eid, args, content){
-                        return '<pre>' + content.replace(/&(?!(?:g|lt))/g, '&amp;').trim() + '</pre>';
+        /* Reserved characters (22.1) */
+        '#' : '#',
+        '$' : '$',
+        '%' : '%',
+        '&' : '&amp;',
+        '_' : '_',
+        '{' : '{',
+        '}' : '}',
+
+        /* Symbols (22.2) */
+        'copyright' : '&copy;',
+        'dag' : '&dagger;',
+        'ddag' : '&Dagger;',
+        'LaTeX' : '\\(\\mathrm{\\LaTeX}\\)',
+        'dots' : '&hellip;',
+        'ldots' : '&hellip;', 
+        'textellipsis' : '&hellip;',
+        'lq' : '&lsquo;', 
+        'P' : '&para;',
+        'textparagraph' : '&para;',
+        'rq' : '&rsquo;',
+        'S' : '&sect;',
+        'TeX' : '\\(\\mathrm{\\TeX}\\)',
+        'textasciicircum' : '^',
+        'textasciitilde' : '~',
+        'textasteriskcentered' : '*',
+        'textbar' : '|',
+        'textbardbl' : '&#8214;',
+        'textbigcircle' : '&#9675;',
+        'textbraceleft' : '{',
+        'textbraceright' : '}',
+        'textbullet' : '&bull;',
+        'textcircled' : { args : 'N',
+            fn: function(args){
+                //FIXME this is not ideal, but for now it's good enough
+                return '<span class="circled">' + (args[0].length === 0 ? '&nbsp;' : args[0][0]) + '</span>' + args[0].slice(1);
+            }
+        },
+        'textcompwordmark' : '&#8291;', //This command is used to separate ligatures
+        'textcapitalwordmark' : '&#8291;', //This command is used to separate ligatures
+        'textascenderwordmark' : '&#8291;', //This command is used to separate ligatures
+        'textdagger' : '&dagger;',
+        'textdaggerdbl' : '&Dagger;',
+        'textdollar' : '$',
+        'textemdash' : '&mdash;',
+        'textendash' : '&ndash;',
+        'textexclamdown' : '&iexcl;',
+        'textgreater' : '&gt;',
+        'textless' : '&lt;',
+        'textleftarrow' : '&larr;',
+        'textordfeminine' : '&ordf;',
+        'textordmasculine' : '&ordm;',
+        'textquestiondown' : '&iquest;',
+        'textquotedblleft' : '&ldquo;',
+        'textquotedblright' : '&rdquo;',
+        'textquoteleft' : '&lsquo;',
+        'textquoteright' : '&rsquo;',
+        'textregistered' : '&reg;',
+        'texttrademark' : '&trade;',
+        'textunderscore' : '_',
+        'textvisiblespace' : '&blank;',
+
+        /* Accented characters (22.3) */
+        '`' : accentBuilder(768),
+        '\'' : accentBuilder(769),
+        '^' : accentBuilder(770),
+        '~' : accentBuilder(771),
+        '=' : accentBuilder(772),
+        'u' : accentBuilder(774),
+        '.' : accentBuilder(775),
+        '"' : accentBuilder(776),
+        'r' : accentBuilder(778),
+        'H' : accentBuilder(779),
+        'v' : accentBuilder(780),
+        'd' : accentBuilder(803), //FIXME in a group, displays in the middle
+        'c' : accentBuilder(807),
+        'b' : accentBuilder(817), //FIXME In a group, displays in the middle
+        't' : accentBuilder(865), //FIXME doesn't display properly
+
+        /* Non-english characters (22.4) */
+        'AA' : '&Aring;',
+        'aa' : '&aring;',
+        'AE' : '&AElig;',
+        'ae' : '&aelig;',
+        'IJ' : '&IJlig;',
+        'ij' : '&ijlig;',
+        'l' : { args : 'N', fn: function(){ return '&#321'; } },
+        'L' : { args : 'N', fn: function(){ return '&#322'; } },
+        'O' : '&Oslash;',
+        'o' : '&oslash;',
+        'OE' : '&OElig;',
+        'oe' : '&oelig;',
+        'ss' : '&szlig;',
+        'SS' : 'SS',
+
+        /* Rules (22.5 & 22.6) */
+        'rule' : { args : 'ONN', //FIXME
+            fn: function(){
+                return '<hr/>';
+            }
+        },
+
+        'today' : { args : '',
+            fn: function(){
+                /* Returns the date the document was modified */
+                return this.state.lastModified.toLocaleString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
+            }
+        },
+
+        /* Splitting the input (23) */
+        'include' : { args : 'N', fn: ignore() }, //FIXME
+        'includeonly' : { args : 'N', fn: ignore() }, //FIXME
+        'input' : { args : 'N', fn: ignore() }, //FIXME
+
+        /* Front/Back Matter (24) */
+        'addcontentsline' : { args : 'NNN', fn: ignore() }, //FIXME
+        'addcontents' : { args : 'NN', fn: ignore() }, //FIXME
+        'glossary' : { args : 'N', fn: ignore() }, //FIXME
+        'makeindex' : '', //FIXME
+        'index' : { args : 'N', fn: ignore() }, //FIXME
+        'indexentry' : { args : 'NN', fn: ignore() }, //FIXME
+        'tableofcontents' : { args : '', fn: function(){ this.state.hasTOC = true; return ''; } },
+
+            /* Letters (25) */ //FIXME
+
+        /* Terminal I/O (26) */ //FIXME
+
+        /* Command line (27) */ //FIXME
+
+
+
+
+        /* Everything else */
+        'bibitem' : { args : 'N',
+            fn: function(args){
+                return '<dt-bibitem label="' + args[0] + '"></dt-bibitem>';
+            }
+        },
+
+        'bibliographystyle': {args : 'N', fn: ignore() }, //FIXME
+
+        'caption' : { args : 'N',
+            fn: function(args){
+                return '<p class="caption">' + args[0] + '</p>'
+            }
+        },
+
+        'centering' : { args : '',
+            fn: function(){
+                this.state.addDefer('</div>');
+                return '<div class="centering">';
+            }
+        },
+
+        'cite' : { args : 'N',
+            fn: function(args){
+                return '<dt-cite label="' + args[0] + '"></dt-cite>'
+            }
+        },
+
+
+        'href' : { args : 'NN',
+            fn: function(args){
+                return '<a href="' + args[0] + '">' + args[1] + '</a>';
+            }
+        },
+
+        'includegraphics' : { args : 'ON',
+            fn: function(args){
+                //FIXME work with all options
+
+                var opts = args[0].split(',');
+                var htmlOptions = '';
+                opts.forEach(function(el){
+                    var option = el.split('=');
+                    if(option[0] === 'scale'){
+                        var scale = Math.round(parseFloat(option[1]) * 100);
+                        htmlOptions += ' width="' + scale + '%"';
                     }
-    }
-            };
-        })(window.DiscoTeX = window.DiscoTeX || {});
+                })
+
+                return '<img ' + htmlOptions + 'src="' + args[1] + '" />';
+            }
+        },
+
+        'item' : { args : '',
+            inParagraph: false,
+            fn: function(){
+                var e = this.state.environmentStack[this.state.environmentStack.length - 1];
+                if(typeof(e.environment.item) !== 'undefined'){
+                    return e.environment.item.call(this, ++e.itemCount);
+                }
+
+                this.logError('"item" command used outside of a listing environment');
+                return '';
+            }
+        },
+
+        'title' : setVariable('title'),
+
+        'url' : { args : 'N',
+            fn: function(args){
+                return '<a href="' + args[0] + '">' + args[0] + '</a>';
+            }
+        },
+
+        'verb' : {
+            args : function(){
+                var ccdb = this.state.catcodeDB;
+                //set to default
+                this.state.resetCatcodes();
+                //then make everything a letter
+                this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%', '`', '\'', '"', '[', ']'], DT.CATCODE.LETTER);
+
+                var args = [];
+                var nextArg = '';
+                var endVerb;
+
+                var ast = false;
+                var asteriskOrFirst = this.getNormalArgument();
+                if(asteriskOrFirst === '*'){
+                    ast = true;
+                    endVerb = this.getNormalArgument();
+                }
+                else{
+                    endVerb = asteriskOrFirst;
+                }
+
+                while(nextArg !== endVerb){
+                    args.push(nextArg);
+                    nextArg = this.getNormalArgument();
+                }
+
+                this.state.catcodeDB = ccdb;
+
+                return [ast, args.join('')];
+            },
+            fn: function(args){
+                if(args[0]){
+                    return '<code>' + args[1].replace(/ /g,'&blank;') + '</code>';
+                }
+                else{
+                    return '<code>' + args[1] + '</code>';
+                }
+            }
+        },
+
+        '[' : {
+            args : function(){
+                var ccdb = this.state.catcodeDB;
+
+                //set to default
+                this.state.resetCatcodes();
+                //then make everything a letter
+                this.state.setCatcode(['\\', '{', '}', '$', '\n', '#', '^', '_', ' ', '\t', '~', '%'], DT.CATCODE.LETTER);
+
+                var endFlag = 0;
+                var leader = '';
+                var arg = '';
+                while(endFlag < 2){
+                    var next = this.getNormalArgument();
+                    var isLeader = (ccdb[next] === DT.CATCODE.ESC || (typeof(ccdb[next]) === 'undefined' && next === '\\')); //FIXME magic leader (\\ is the default leader)
+                    if(endFlag === 0 && isLeader){
+                        leader = next;
+                        ++endFlag;
+                        continue;
+                    }
+
+                    if(endFlag === 1 && next === ']'){
+                        ++endFlag;
+                        continue;
+                    }
+
+                    if(endFlag === 1){
+                        arg += leader;
+                    }
+                    endFlag = 0;
+                    arg += next;
+                }
+
+                this.state.catcodeDB = ccdb;
+
+                return [arg];
+            },
+
+            fn: function(args){
+                return '\\[' + args[0] + '\\]';
+            }
+        },
+
+        /* These commands are not TeX or LaTeX standards
+         * They are provided by the DiscoTeX package.
+         */
+
+        'dtcollapse' : { args : '',
+            fn: function(){
+                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
+                return '';
+            }
+        },
+        'dtnocollapse' : '',
+        'dtstartcollapsed' : { args : '',
+            fn: function(){
+                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
+                return '';
+            }
+        },
+        //        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
+        //        //'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
+        'ifdisco' : { args : 'NN',
+            fn: function(args){
+                //FIXME make it so the second parameter's errors are ignored
+                //Maybe do this with a coroutine and suspending warning logs between the second parameter?
+                return args[0];
+            }
+
+        }
+    };
+
+    DT.Env = {
+        'abstract' : {
+            begin: function(){
+                return '<dt-abstract>';
+            },
+
+            end: function(){
+                return '</dt-abstract>';
+            }
+        },
+
+        'description' : {
+            internalParagraphs: false,
+            begin: function(){
+                return '<dl class="dl-horizontal">';
+            },
+            end: function(e){
+                var output = '</dl>';
+                if(e.itemCount !== 0){
+                    output = '</dd>\n' + output;
+                }
+                return output;
+            },
+            item: function(count){
+                var opt = this.getOptionalArgument();
+                if(typeof(opt) === 'undefined'){
+                    opt = '';
+                }
+
+                if(count === 1){
+                    return '<dt>' + opt + '</dt>\n<dd>';
+                }
+                else{
+                    return '</dd>\n<dt>' + opt + '</dt>\n<dd>';
+                }
+            }
+        },
+
+        'center' : {
+            internalParagraphs: false,
+            begin: function(){
+                return '<div style="text-align:center;">';
+            },
+            end: function(){
+                return '</div>';
+            }
+        },
+
+        'document' : { //THIS IS A MASSIVE HACK. FIXME. Move it to the document class
+            begin: function(eid){
+                return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">';
+            },
+            end: function(){
+                return '</div>\n</div>' + this.setDisplay(false);
+            }
+        },
+
+        'enumerate' : {
+            internalParagraphs: false,
+            begin: function(){
+                return '<ol>';
+            },
+            end: function(e){
+                var output = '</ol>';
+                if(e.itemCount > 0){
+                    output = '</li>\n' + output;
+                }
+                return output;
+            },
+            item: function(count){
+                if(count === 1){
+                    return '<li>';
+                }
+                else{
+                    return '</li>\n<li>';
+                }
+            }
+        },
+
+        'equation' : {
+            parse: function(eid, args, content){
+                var labelRegExp = new RegExp('\\\\label{(.+)}');
+                var labelMatch = content.match(labelRegExp);
+                var tagRegExp = new RegExp('\\\\tag{(.+)}');
+                var tagMatch = content.match(tagRegExp);
+                /* Because we can look at the internals of the entire equation environment,
+                 * we can actually get the label here. This means that we don't need to
+                 * register the label with the parser state, or put in a back-reference, or
+                 * anything else fancy. We can just insert it now as is.
+                 *
+                 * This is maybe a little dangerous, because we're working with a special
+                 * case. If this turns out to be ugly, we'll go back and do it in the
+                 * consistent way: with back-references.
+                 */
+                var output = '<dt-equation'
+                if(labelMatch !== null){
+                    output += ' label="' + labelMatch[1] + '"';
+                }
+                if(tagMatch !== null){
+                    output += ' tag="' + tagMatch[1] + '"';
+                }
+                output += '>' + content.replace(labelRegExp, '').replace(tagRegExp, '');
+                return output + '</dt-equation>';
+            }
+        },
+
+        'eqnarray' : {
+            parse: function(eid, args, content){
+                this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray environment');
+                return 'MATHJAX'; //FIXME
+            }
+        },
+
+        'eqnarray*' : {
+            parse: function(eid, args, content){
+                this.logWarning('According to the LaTeX2e standard, you should not be using the eqnarray* environment');
+                return 'MATHJAX'; //FIXME
+            }
+        },
+
+        'flushleft' : {
+            begin: function(){
+                return '<div style="text-align:left;">';
+            },
+            end: function(){
+                return '</div>';
+            }
+        },
+
+        'flushright' : {
+            //FIXME for whatever reason this doesn't right align things the way it's supposed to
+            begin: function(){
+                return '<div class="text-align:right;">';
+            },
+            end: function(){
+                return '</div>';
+            }
+        },
+
+
+        'itemize' : {
+            internalParagraphs: false,
+            begin: function(){
+                return '<ul>';
+            },
+            end: function(e){
+                var output = '</ul>';
+                if(e.itemCount > 0){
+                    output = '</li>\n' + output;
+                }
+                return output;
+            },
+            item: function(count){
+                if(count === 1){
+                    return '<li>';
+                }
+                else{
+                    return '</li>\n<li>';
+                }
+            }
+        },
+
+        'quote' : {
+            begin: function(eid){
+                return '<blockquote>';
+            },
+            end: function(eid){
+                return '</blockquote>';
+            }
+        },
+
+        'quotation' : {
+            begin: function(eid){
+                return '<blockquote class="indent">';
+            },
+            end: function(eid){
+                return '</blockquote>';
+            }
+        },
+
+        'tabular' : {
+            args : 'ON',
+            internalParagraphs: false,
+            begin: function(eid){
+                this.state.setEnvironmentData(eid, 'cmd', {'\\' : DT.getCmd('\\'), 'hline' : DT.getCmd('hline') });
+
+                //FIXME this should be a call to DT.setCmd
+                DT.Cmd['\\'] = '</td></tr>\n<tr><td>';
+                DT.Cmd['hline'] = ''; //FIXME should i really ignore this?
+
+                return '<table class="table table-hover">\n<tr>\n<td>';
+            },
+            end: function(eid){
+                //FIXME this should be a call to DT.setCmd
+                DT.Cmd['\\'] = this.state.getEnvironmentData(eid, 'cmd')['\\'];
+                DT.Cmd['hline'] = this.state.getEnvironmentData(eid, 'cmd')['hline'];
+
+                return '</td></tr></table>';
+            },
+            align: function(colNumber){
+                return '</td><td>';
+            }
+
+        },
+
+        'thebibliography' : {
+            /* This argument is the width of the widest label, which TeX
+             * uses to deal with spacing. HTML makes spacing easier, so
+             * we simply read this argument and completely ignore it.
+             */
+            args : 'N',
+            internalParagraphs: false,
+            begin: function(eid, args){
+                return '<dt-bibliography>';
+            },
+
+            end: function(){
+                return '</dt-bibliography>';
+            }
+        },
+
+        'titlepage' : {
+            args : '',
+            begin: function(eid){
+                return '<dt-titlepage>';
+            },
+            end: function(){
+                return '</dt-titlepage>';
+            }
+        },
+
+        'verse' : {
+            args : '',
+            begin: function(eid){
+                return '<dt-verse>';
+            },
+            end: function(){
+                return '</dt-verse>';
+            }
+        },
+
+        'verbatim' : {
+            internalParagraphs: false,
+            parse: function(eid, args, content){
+                return '<pre>' + content.replace(/&(?!(?:g|lt))/g, '&amp;').trim() + '</pre>';
+            }
+        }
+    };
+})(window.DiscoTeX = window.DiscoTeX || {});

@@ -161,6 +161,23 @@
             this.scopeStack[this.scopeStack.length - 1].push(d);
         },
 
+        //counter stuff
+        getCounterValue: function(name){
+            return this.counter[name].val;
+        },
+
+        stepCounter: function(name){
+            this.counter[name].val++;
+            this.counter[name].resets.forEach(function(el){
+                this.setCounter(name, 0);
+            }, this);
+            return 
+        },
+
+        setCounter: function(name, value){
+            this.counter[name].val = value;
+        },
+
         //section label stuff
 
         pushSectionLabel: function(){

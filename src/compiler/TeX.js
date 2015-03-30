@@ -294,7 +294,7 @@
             fn: function(args){
                 this.state.pushSectionLabel(); //autoincrements section counter
 
-                return '<dt-section section-title="' + escapeString(args[1]) + '"' + (args[0] === '*' ? '' : ' number = "' + getCounterValue.call(this, 'section') + '"') + '<!--lbl:sec:' + this.state.getSectionString(0) + '-->></dt-section>';
+                return '<dt-section section-title="' + escapeString(args[1]) + '"' + (args[0] === '*' ? '' : ' number = "' + this.state.getCounterValue('section') + '"') + '<!--lbl:sec:' + this.state.getSectionString(0) + '-->></dt-section>';
             }
         },
 
@@ -316,7 +316,7 @@
             inParagraph: false,
             fn: function(args){
                 this.state.pushSubsectionLabel(); //autoincrementns subsection counter
-                return '<dt-subsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + getCounterValue.call(this, 'subsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(1) + '-->></dt-subsection>';
+                return '<dt-subsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(1) + '-->></dt-subsection>';
             }
         },
 
@@ -338,7 +338,7 @@
             inParagraph: false,
             fn: function(args){
                 this.state.pushSubsubsectionLabel(); //autoincrements subsubsection counter
-                return '<dt-subsubsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + getCounterValue.call(this, 'subsubsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(2) + '-->></dt-subsubsection>';
+                return '<dt-subsubsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsubsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(2) + '-->></dt-subsubsection>';
             }
         },
 
@@ -655,6 +655,7 @@
                     this.state.counter[args[0]].resets.push(args[1]);
 
                 }
+                return '';
             }
         },
         'newlength': '', //FIXME
@@ -666,8 +667,48 @@
         'protect': '', //FIXME
 
         /* Counters (14) */
-        'alph' :  '', //FIXME
-        'Alph' : '', //FIXME
+        'alph' :  { args: 'N',
+            fn: function(args){
+                //FIXME is this the correct output for non-positive counter values?
+                var charSet = 'abcdefghijklmnopqrstuvwxyz';
+                var counterValue = this.state.getCounterValue(args[0]);
+                var outputString = '';
+                while(true){
+                    if(counterValue === 0){
+                        break;
+                    }
+
+                    --counterValue;
+
+                    outputString = charSet[ counterValue % 26 ] + outputString;
+                    counterValue -= (counterValue % 26);
+                    counterValue /= 26;
+                }
+
+                return outputString;
+            }
+        },
+        'Alph' :  { args: 'N',
+            fn: function(args){
+                //FIXME is this the correct output for non-positive counter values?
+                var charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                var counterValue = this.state.getCounterValue(args[0]);
+                var outputString = '';
+                while(true){
+                    if(counterValue === 0){
+                        break;
+                    }
+
+                    --counterValue;
+
+                    outputString = charSet[ counterValue % 26 ] + outputString;
+                    counterValue -= (counterValue % 26);
+                    counterValue /= 26;
+                }
+
+                return outputString;
+            }
+        },
         'arabic' : '', //FIXME
         'roman' : '', //FIXME
         'Roman' : '', //FIXME
@@ -686,7 +727,7 @@
         },
         'addtocounter' : { args : 'NN',
             fn: function(args){
-                this.state.setCounter(args[0], this.getCounterValue(args[0]) + parseInt(args[1]));
+                this.state.setCounter(args[0], this.state.getCounterValue(args[0]) + parseInt(args[1]));
                 return '';
             }
         },
@@ -694,6 +735,7 @@
             fn: function(args){
                 this.state.stepCounter(args[0]);
                 //FIXME make this counter visible to the \ref{...} command
+                return '';
             }
         },
         'stepcounter' : { args : 'N',

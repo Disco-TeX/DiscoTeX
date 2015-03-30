@@ -777,7 +777,17 @@
                 return outputString;
             }
         },
-        'fnsymbol' : '', //FIXME
+        'fnsymbol' : { args : 'N',
+            fn : function(args){
+                var fnNum = parseInt(this.state.getCounterValue(args[0]));
+                if(fnNum < 1 || fnNum > 9){
+                    this.logWarning('The "fnsymbol" command only accepts counter values in the range 1-9, but a value of ' + fnNum + ' was used.');
+                    return '';
+                }
+                var fnList = ['*', '&dagger;', '&Dagger;', '&sect;', '&para;', '&#2225;', '**', '&dagger;&dagger;', '&Dagger;&Dagger;'];
+                return fnList[fnNum - 1];
+            }
+        },
         'usecounter' : '', //FIXME
         'value' : { args : 'N',
             fn : function(args){

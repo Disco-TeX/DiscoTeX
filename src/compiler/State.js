@@ -29,14 +29,20 @@
          * store them here.
          */
         this.counter = {
-            'section': 0,
-            'subsection': 0,
-            'subsubsection': 0
+            'section': { val: 0, resets: ['subsection', 'subsubsection'] },
+            'subsection': { val: 0, resets: ['subsubsection'] },
+            'subsubsection': { val: 0, resets: [] }
         };
         this.vars = {
             'columnsep' : '35pt',
             'columnseprule' : '0pt',
         };
+
+        /* New commands:
+         * If this is set to true, read commands literally, rather than
+         * implementing them.
+         */
+        this.commandVerbatim = false;
 
         /* Columns:
          * We need to count how many columns we are currently showing.
@@ -155,7 +161,24 @@
             this.scopeStack[this.scopeStack.length - 1].push(d);
         },
 
-        //seciton label stuff
+        //counter stuff
+        getCounterValue: function(name){
+            return this.counter[name].val;
+        },
+
+        stepCounter: function(name){
+            this.counter[name].val++;
+            this.counter[name].resets.forEach(function(el){
+                this.setCounter(name, 0);
+            }, this);
+            return 
+        },
+
+        setCounter: function(name, value){
+            this.counter[name].val = value;
+        },
+
+        //section label stuff
 
         pushSectionLabel: function(){
             var lbl = this.labelStack[this.labelStack.length - 1];
@@ -163,9 +186,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-            ++this.counter['section'];
-            this.counter['subsection'] = 0;
-            this.counter['subsubsection'] = 0;
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['section']);//FIXME this is a hack, the state should point to the parser
             this.labelStack.push({type: 'sec', label: this.getSectionString(0) });
         },
 
@@ -175,9 +196,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-
-            ++this.counter['subsection'];
-            this.counter['subsubsection'] = 0;
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['subsection']);
             this.labelStack.push({type: 'sec', label: this.getSectionString(1) });
         },
 
@@ -187,7 +206,7 @@
                 this.labelStack.pop();
                 lbl = this.labelStack[this.labelStack.length - 1];
             }
-            ++this.counter['subsubsection'];
+            DT.Cmd['stepcounter'].fn.call({state: this}, ['subsubsection']);
             this.labelStack.push({type: 'sec', label: this.getSectionString(2) });
         },
 

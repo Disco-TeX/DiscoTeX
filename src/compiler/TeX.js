@@ -5,7 +5,7 @@
 
     var accentBuilder = function(entityNumber){
         return { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 if(args[0].length == 0){
                     return ''; //FIXME
                 }
@@ -39,7 +39,7 @@
 
             DT.setCmd(cmd, {
                 args : argString,
-                fn: function(args){
+                fn : function(args){
                     for(var i = 1; i <= 9; ++i){
                         defn = defn.replace(new RegExp('(?:^|[^\\\\])#' + i,'g'), args[i - 1]);
                     }
@@ -79,21 +79,21 @@
     };
 
     var spanClassBuilder = function(className){
-        return { args : 'N', fn: function(args){
+        return { args : 'N', fn : function(args){
             return '<span class="' + className + '">' + args[0] + '</span>';
         } };
     };
 
 
     var setVariable = function(varName){
-        return { args : 'N', fn: function(args){
+        return { args : 'N', fn : function(args){
             this.state.vars[varName] = args[0];
             return '';
         } };
     };
 
     var getVariable = function(varName){
-        return { args : 'N', fn: function(args){
+        return { args : 'N', fn : function(args){
             return this.state.vars[varName];
         } };
     };
@@ -107,7 +107,7 @@
     };
 
     var wrap = function(tag){
-        return { args : 'N', fn: function(args){
+        return { args : 'N', fn : function(args){
             return '<' + tag + '>' + args[0] + '</' + tag + '>';
         } };
     };
@@ -137,49 +137,49 @@
         'textnormal' : spanClassBuilder('dt-normal'),
 
         'bf' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</strong>');
                 return '<strong>';
             }
         },
 
         'em' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</em>');
                 return '<em>';
             }
         },
 
         'rm' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-rm">';
             }
         },
 
         'sc' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sc">';
             }
         },
 
         'sf' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sf">';
             }
         },
 
         'sl' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-sl">';
             }
         },
 
         'tt' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</span>');
                 return '<span class="dt-tt">';
             }
@@ -187,7 +187,7 @@
 
         /* Document classes (4) */
         'documentclass' : { args : 'ON',
-            fn: function(args){
+            fn : function(args){
                 var cls = DT.Classes[args[1]];
                 if(typeof(cls) === 'undefined'){
                     this.logError('Unknown document class. Proceeding with document class "article".');
@@ -200,7 +200,7 @@
         },
 
         'usepackage' : { args : 'ON',//FIXME
-            fn: function(args){
+            fn : function(args){
                 //FIXME we really need to be loading the packages from elsewhere.
                 //this is for testing pursposes only.
 
@@ -216,7 +216,7 @@
 
         /* Layout (6) */
         'onecolumn' : { args : '',
-            fn: function(){
+            fn : function(){
 
                 //FIXME you can't just close the div and hope
                 //for the best. you need to pop a lot of stuff
@@ -235,7 +235,7 @@
             }
         },
         'twocolumn' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.logWarning('Be careful using a two-column layout on the web. Because there are no pages, a single column can extend much further than it would on a PDF, rendering the web-document much less beautiful than it\'s PDF counterpart.');
 
                 //FIXME you can't just close the div and hope
@@ -257,22 +257,22 @@
         'columnsep' : getVariable('columnsep'),
         'columnseprule' : getVariable('columnseprule'),
 
-        'columnwidth': { args : '', fn: ignore('The "columnwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'columnwidth': { args : '', fn : ignore('The "columnwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'dbltopfraction' : { args : '', fn : ignore('The "dbltopfraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatpagefraction' : { args : '', fn: ignore('The "dblfloatpagefraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dblfloatsep' : { args : '', fn: ignore('The "dblfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'dbltextfloatsep' : { args : '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'flushbottom' : { args : '', fn: ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'raggedbottom' : { args : '', fn: ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatpagefraction' : { args : '', fn : ignore('The "dblfloatpagefraction" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dblfloatsep' : { args : '', fn : ignore('The "dblfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'dbltextfloatsep' : { args : '', fn : ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'flushbottom' : { args : '', fn : ignore('The "flushbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'raggedbottom' : { args : '', fn : ignore('The "raggedbottom" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
-        'headheight': { args : '', fn: ignore('The "headheight" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'headsep': { args : '', fn: ignore('The "headsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'footskip': { args : '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'linewidth': { args : '', fn: ignore('The "linewidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'textheight': { args : '', fn: ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'textwidth': { args : '', fn: ignore('The "textwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'topmargin': { args : '', fn: ignore('The "topmargin" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'topskip': { args : '', fn: ignore('The "topskip" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'headheight': { args : '', fn : ignore('The "headheight" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'headsep': { args : '', fn : ignore('The "headsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'footskip': { args : '', fn : ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'linewidth': { args : '', fn : ignore('The "linewidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textheight': { args : '', fn : ignore('The "dbltextfloatsep" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'textwidth': { args : '', fn : ignore('The "textwidth" variable is intentionally not supporetd by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topmargin': { args : '', fn : ignore('The "topmargin" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'topskip': { args : '', fn : ignore('The "topskip" variable is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Sectioning (7) */
         'section' : {
@@ -291,7 +291,7 @@
                 return [arg0, arg1];
             },
             inParagraph: false,
-            fn: function(args){
+            fn : function(args){
                 this.state.pushSectionLabel(); //autoincrements section counter
 
                 return '<dt-section section-title="' + escapeString(args[1]) + '"' + (args[0] === '*' ? '' : ' number = "' + this.state.getCounterValue('section') + '"') + '<!--lbl:sec:' + this.state.getSectionString(0) + '-->></dt-section>';
@@ -314,7 +314,7 @@
                 return [arg0, arg1];
             },
             inParagraph: false,
-            fn: function(args){
+            fn : function(args){
                 this.state.pushSubsectionLabel(); //autoincrementns subsection counter
                 return '<dt-subsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(1) + '-->></dt-subsection>';
             }
@@ -336,49 +336,49 @@
                 return [arg0, arg1];
             },
             inParagraph: false,
-            fn: function(args){
+            fn : function(args){
                 this.state.pushSubsubsectionLabel(); //autoincrements subsubsection counter
                 return '<dt-subsubsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsubsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(2) + '-->></dt-subsubsection>';
             }
         },
 
         //FIXME Only in book/report classes
-        'part': { args : 'N', fn: ignore() }, //FIXME
-        'chapter': { args : 'N', fn: ignore() }, //FIXME
+        'part': { args : 'N', fn : ignore() }, //FIXME
+        'chapter': { args : 'N', fn : ignore() }, //FIXME
 
-        'paragraph': { args : 'N', fn: ignore() }, //FIXME
-        'subparagraph': { args : 'N', fn: ignore() }, //FIXME
+        'paragraph': { args : 'N', fn : ignore() }, //FIXME
+        'subparagraph': { args : 'N', fn : ignore() }, //FIXME
 
 
         /* Cross-references (8) */
         'label' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 this.state.registerLabel(args[0]);
                 return ''
             }
         },
         'pageref' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 this.logWarning('Page references are intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.');
                 return '';
             }
         },
 
         'ref' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<dt-ref label="' + args[0] + '"></dt-ref>';
             }
         },
 
         'eqref' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<dt-eqref label="' + args[0] + '"></dt-eqref>';
             }
         },
 
         /* Environments (9) */
         'begin': { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 /* This function takes a single normal parameter representing
                  * the name of the environment to be begun. We then look at
                  * this environment and get more parameters depending on the
@@ -465,7 +465,7 @@
         },
 
         'end' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 var env = DT.getEnv(args[0]);
 
 
@@ -510,7 +510,7 @@
 
                 return [this.getOptionalArgument()];
             },
-            fn: function(args){
+            fn : function(args){
                 if(typeof(args[0]) === 'undefined'){
                     return '<br/>';
                 }
@@ -520,7 +520,7 @@
 
         'obeycr' : {
             args : '',
-            fn: function(){
+            fn : function(){
                 this.state.obeycr = true;
                 return '';
             }
@@ -528,7 +528,7 @@
 
         'restorecr' : {
             args : '',
-            fn: function(){
+            fn : function(){
                 this.state.obeycr = false;
                 return '';
             }
@@ -542,14 +542,14 @@
          */
         '-' : '', 'fussy' : '', 'sloppy' : '', 'hyphenation' : '', 
 
-        'linebreak' : { args : 'O', fn: function(){ return '<br/>'; } },
-        'nolinebreak' : { args : 'O', fn: ignore() }, //FIXME This may be worth ignoring
+        'linebreak' : { args : 'O', fn : function(){ return '<br/>'; } },
+        'nolinebreak' : { args : 'O', fn : ignore() }, //FIXME This may be worth ignoring
 
         /* Page breaking (11) */
 
-        'cleardoublepage' : { args : '', fn: ignore('The "cleardoublepage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'clearpage' : { args : '', fn: ignore('The "clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'newpage' : { args : '', fn: ignore('The "newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'cleardoublepage' : { args : '', fn : ignore('The "cleardoublepage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'clearpage' : { args : '', fn : ignore('The "clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'newpage' : { args : '', fn : ignore('The "newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'enlargethispage' : {
             args : function(){
                 if(this.stream.peek() === '*'){
@@ -558,14 +558,14 @@
                 this.getNormalArgument();
                 return [];
             },
-            fn: ignore('The "enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
+            fn : ignore('The "enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
         },
-        'pagebreak' : { args : 'O', fn: ignore('The "pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'nopagebreak' : { args : 'O', fn: ignore('The "nopagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagebreak' : { args : 'O', fn : ignore('The "pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'nopagebreak' : { args : 'O', fn : ignore('The "nopagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Footnotes (12) */
         'footnote' : { args : 'ON',
-            fn: function(args){
+            fn : function(args){
                 if(typeof(args[0]) === 'undefined'){
                     return '<dt-footnote>' + args[1] + '</dt-footnote>';
                 }
@@ -573,9 +573,8 @@
             }
         },
 
-        'footnotemark' : { args : 'O', fn: ignore() }, //FIXME
-        'footnotetext' : { args : 'ON', fn: ignore() }, //FIXME
-        'fnsymbol' : '', //FIXME
+        'footnotemark' : { args : 'O', fn : ignore() }, //FIXME
+        'footnotetext' : { args : 'ON', fn : ignore() }, //FIXME
         'footnoterule' : '', //FIXME
         'footnotesep' : '', //FIXME
 
@@ -603,7 +602,7 @@
 
                 return returnArgs;
             },
-            fn: function(args){
+            fn : function(args){
                 //Check if the command was already defined.
                 if(DT.hasCmd(args[1])){
                     this.logError('The command "" has already been defined. Try using "renewcommand".');
@@ -636,7 +635,7 @@
 
                 return returnArgs;
             },
-            fn: function(args){
+            fn : function(args){
                 //Check if the command was already defined.
                 if(!DT.hasCmd(args[1])){
                     this.logError('The command "" has not yet been defined. Try using "newcommand".');
@@ -646,7 +645,7 @@
             }
         },
         'newcounter': { args : 'NO',
-            fn: function(args){
+            fn : function(args){
                 if(typeof(this.state.counter[args[0]]) !== 'undefined'){
                     this.logError('The counter "' + args[0] + '" already exists.');
                 }
@@ -667,8 +666,8 @@
         'protect': '', //FIXME
 
         /* Counters (14) */
-        'alph' :  { args: 'N',
-            fn: function(args){
+        'alph' :  { args : 'N',
+            fn : function(args){
                 //FIXME is this the correct output for non-positive counter values?
                 var charSet = 'abcdefghijklmnopqrstuvwxyz';
                 var counterValue = this.state.getCounterValue(args[0]);
@@ -688,8 +687,8 @@
                 return outputString;
             }
         },
-        'Alph' :  { args: 'N',
-            fn: function(args){
+        'Alph' :  { args : 'N',
+            fn : function(args){
                 //FIXME is this the correct output for non-positive counter values?
                 var charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 var counterValue = this.state.getCounterValue(args[0]);
@@ -709,53 +708,119 @@
                 return outputString;
             }
         },
-        'arabic' : '', //FIXME
-        'roman' : '', //FIXME
-        'Roman' : '', //FIXME
+        'arabic' : { args : 'N',
+            fn : function(args){
+                return args[0].toString();
+            }
+        },
+        'roman' : { args : 'N',
+            fn : function(args){
+                var counterValue = this.state.getCounterValue(args[0]);
+                if(counterValue <= 0 || counterValue > 4999){
+                    this.logError('Roman numeral counters are not supported outside the range of [1, 4999], but the value given is ' + counterValue);
+                    return '';
+                }
+
+                var outputString = '';
+                var charSet = ['iv', 'xl', 'cd', ['m', 'mmm']];
+                for(var i = 0; i < 4; ++i){
+                    var digit = counterValue % 10;
+                    counterValue = parseInt(counterValue /10);
+                    if(digit === 4){
+                        outputString = charSet[i] + outputString;
+                    }
+                    else if(digit === 9){
+                        outputString = charSet[i][0] + charSet[i + 1][0] + outputString;
+                    }
+                    else{
+                        while(digit % 5 !== 0){
+                            outputString = charSet[i][0] + outputString;
+                            --digit;
+                        }
+                        if(digit === 5){
+                            outputString = charSet[i][1] + outputString;
+                        }
+                    }
+                }
+                return outputString;
+            }
+        },
+        'Roman' : { args : 'N',
+            fn : function(args){
+                var counterValue = this.state.getCounterValue(args[0]);
+                if(counterValue <= 0 || counterValue > 4999){
+                    this.logError('Roman numeral counters are not supported outside the range of [1, 4999], but the value given is ' + counterValue);
+                    return '';
+                }
+
+                var outputString = '';
+                var charSet = ['IV', 'XL', 'CD', ['M', 'MMM']];
+                for(var i = 0; i < 4; ++i){
+                    var digit = counterValue % 10;
+                    counterValue = parseInt(counterValue /10);
+                    if(digit === 4){
+                        outputString = charSet[i] + outputString;
+                    }
+                    else if(digit === 9){
+                        outputString = charSet[i][0] + charSet[i + 1][0] + outputString;
+                    }
+                    else{
+                        while(digit % 5 !== 0){
+                            outputString = charSet[i][0] + outputString;
+                            --digit;
+                        }
+                        if(digit === 5){
+                            outputString = charSet[i][1] + outputString;
+                        }
+                    }
+                }
+                return outputString;
+            }
+        },
         'fnsymbol' : '', //FIXME
         'usecounter' : '', //FIXME
         'value' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return this.state.counter[ args[0] ];
             }
         },
         'setcounter' : { args : 'NN',
-            fn: function(args){
+            fn : function(args){
                 this.state.setCounter(args[0], parseInt(args[1]));
                 return '';
             }
         },
         'addtocounter' : { args : 'NN',
-            fn: function(args){
+            fn : function(args){
                 this.state.setCounter(args[0], this.state.getCounterValue(args[0]) + parseInt(args[1]));
                 return '';
             }
         },
         'refstepcounter' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 this.state.stepCounter(args[0]);
                 //FIXME make this counter visible to the \ref{...} command
                 return '';
             }
         },
         'stepcounter' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 this.state.stepCounter(args[0]);
                 return '';
             }
         },
         'day' : { args : '',
-            fn: function(){
+            fn : function(){
                 return this.state.lastModified.getDate();
             }
         },
         'month' : { args : '',
-            fn: function(){
+            fn : function(){
                 return this.state.lastModified.getMonth() + 1;
             }
         },
         'year' : { args : '',
-            fn: function(){
+            fn : function(){
                 return this.state.lastModified.getFullYear();
             }
         },
@@ -770,7 +835,7 @@
 
         /* Page styles (19) */
         'maketitle': {args : '',
-            fn: function(){
+            fn : function(){
                 var title = this.getVariable('title');
                 var author = this.getVariable('author');
                 var date = this.getVariable('date');
@@ -798,9 +863,9 @@
         'title': setVariable('title'),
 
 
-        'pagenumbering' : { args : 'N', fn: ignore('The "pagenumbering" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'pagestyle' : { args : 'N', fn: ignore('The "pagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
-        'thispagestyle' : { args : 'N', fn: ignore('The "thispagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagenumbering' : { args : 'N', fn : ignore('The "pagenumbering" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'pagestyle' : { args : 'N', fn : ignore('The "pagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
+        'thispagestyle' : { args : 'N', fn : ignore('The "thispagestyle" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
 
         /* Spaces (20) */
         'hspace' : {
@@ -815,7 +880,7 @@
 
                 return [this.getNormalArgument()];
             },
-            fn: function(args){
+            fn : function(args){
                 return '<span style="width:' + translateDistance(args[0]) + ';"></span>';
             }
         },
@@ -855,24 +920,24 @@
 
                 return [this.getNormalArgument()];
             },
-            fn: function(args){
+            fn : function(args){
                 return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
             }
         },
 
         /* Boxes (21) */
         'mbox' : { args : 'N', 
-            fn: function(args){
+            fn : function(args){
                 return '<span class="mbox">' + args[0] + '</span>';
             }
         },
         'fbox' : { args : 'OON',
-            fn: function(args){
+            fn : function(args){
                 return '<span class="fbox">' + args[2] + '</span>';
             }
         },
         'framebox' : { args : 'OON',
-            fn: function(args){
+            fn : function(args){
                 return '<span class="fbox">' + args[2] + '</span>';
             }
         },
@@ -917,7 +982,7 @@
         'textbraceright' : '}',
         'textbullet' : '&bull;',
         'textcircled' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 //FIXME this is not ideal, but for now it's good enough
                 return '<span class="circled">' + (args[0].length === 0 ? '&nbsp;' : args[0][0]) + '</span>' + args[0].slice(1);
             }
@@ -970,8 +1035,8 @@
         'ae' : '&aelig;',
         'IJ' : '&IJlig;',
         'ij' : '&ijlig;',
-        'l' : { args : 'N', fn: function(){ return '&#321'; } },
-        'L' : { args : 'N', fn: function(){ return '&#322'; } },
+        'l' : { args : 'N', fn : function(){ return '&#321'; } },
+        'L' : { args : 'N', fn : function(){ return '&#322'; } },
         'O' : '&Oslash;',
         'o' : '&oslash;',
         'OE' : '&OElig;',
@@ -981,31 +1046,31 @@
 
         /* Rules (22.5 & 22.6) */
         'rule' : { args : 'ONN', //FIXME
-            fn: function(){
+            fn : function(){
                 return '<hr/>';
             }
         },
 
         'today' : { args : '',
-            fn: function(){
+            fn : function(){
                 /* Returns the date the document was modified */
                 return this.state.lastModified.toLocaleString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
             }
         },
 
         /* Splitting the input (23) */
-        'include' : { args : 'N', fn: ignore() }, //FIXME
-        'includeonly' : { args : 'N', fn: ignore() }, //FIXME
-        'input' : { args : 'N', fn: ignore() }, //FIXME
+        'include' : { args : 'N', fn : ignore() }, //FIXME
+        'includeonly' : { args : 'N', fn : ignore() }, //FIXME
+        'input' : { args : 'N', fn : ignore() }, //FIXME
 
         /* Front/Back Matter (24) */
-        'addcontentsline' : { args : 'NNN', fn: ignore() }, //FIXME
-        'addcontents' : { args : 'NN', fn: ignore() }, //FIXME
-        'glossary' : { args : 'N', fn: ignore() }, //FIXME
+        'addcontentsline' : { args : 'NNN', fn : ignore() }, //FIXME
+        'addcontents' : { args : 'NN', fn : ignore() }, //FIXME
+        'glossary' : { args : 'N', fn : ignore() }, //FIXME
         'makeindex' : '', //FIXME
-        'index' : { args : 'N', fn: ignore() }, //FIXME
-        'indexentry' : { args : 'NN', fn: ignore() }, //FIXME
-        'tableofcontents' : { args : '', fn: function(){ this.state.hasTOC = true; return ''; } },
+        'index' : { args : 'N', fn : ignore() }, //FIXME
+        'indexentry' : { args : 'NN', fn : ignore() }, //FIXME
+        'tableofcontents' : { args : '', fn : function(){ this.state.hasTOC = true; return ''; } },
 
             /* Letters (25) */ //FIXME
 
@@ -1018,41 +1083,41 @@
 
         /* Everything else */
         'bibitem' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<dt-bibitem label="' + args[0] + '"></dt-bibitem>';
             }
         },
 
-        'bibliographystyle': {args : 'N', fn: ignore() }, //FIXME
+        'bibliographystyle': {args : 'N', fn : ignore() }, //FIXME
 
         'caption' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<p class="caption">' + args[0] + '</p>'
             }
         },
 
         'centering' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.addDefer('</div>');
                 return '<div class="centering">';
             }
         },
 
         'cite' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<dt-cite label="' + args[0] + '"></dt-cite>'
             }
         },
 
 
         'href' : { args : 'NN',
-            fn: function(args){
+            fn : function(args){
                 return '<a href="' + args[0] + '">' + args[1] + '</a>';
             }
         },
 
         'includegraphics' : { args : 'ON',
-            fn: function(args){
+            fn : function(args){
                 //FIXME work with all options
 
                 var opts = args[0].split(',');
@@ -1071,7 +1136,7 @@
 
         'item' : { args : '',
             inParagraph: false,
-            fn: function(){
+            fn : function(){
                 var e = this.state.environmentStack[this.state.environmentStack.length - 1];
                 if(typeof(e.environment.item) !== 'undefined'){
                     return e.environment.item.call(this, ++e.itemCount);
@@ -1085,7 +1150,7 @@
         'title' : setVariable('title'),
 
         'url' : { args : 'N',
-            fn: function(args){
+            fn : function(args){
                 return '<a href="' + args[0] + '">' + args[0] + '</a>';
             }
         },
@@ -1121,7 +1186,7 @@
 
                 return [ast, args.join('')];
             },
-            fn: function(args){
+            fn : function(args){
                 if(args[0]){
                     return '<code>' + args[1].replace(/ /g,'&blank;') + '</code>';
                 }
@@ -1169,7 +1234,7 @@
                 return [arg];
             },
 
-            fn: function(args){
+            fn : function(args){
                 return '\\[' + args[0] + '\\]';
             }
         },
@@ -1179,14 +1244,14 @@
          */
 
         'dtcollapse' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
                 return '';
             }
         },
         'dtnocollapse' : '',
         'dtstartcollapsed' : { args : '',
-            fn: function(){
+            fn : function(){
                 this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
                 return '';
             }
@@ -1194,7 +1259,7 @@
         //        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
         //        //'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
         'ifdisco' : { args : 'NN',
-            fn: function(args){
+            fn : function(args){
                 //FIXME make it so the second parameter's errors are ignored
                 //Maybe do this with a coroutine and suspending warning logs between the second parameter?
                 return args[0];

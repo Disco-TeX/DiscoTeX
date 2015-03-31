@@ -14,7 +14,7 @@
         };
     };
 
-    var makeNewCommand = function(ast, cmd, nargs, optarg, defn){
+    var makeNewCommand = function(ast, cmd, nargs, optarg, defn){//FIXME i'm not using the asterisk at all here
         if(typeof(nargs) === 'undefined' || nargs === '0'){
             nargs = 0;
         }
@@ -276,69 +276,30 @@
 
         /* Sectioning (7) */
         'section' : {
-            args : function(){
-                var ign = this.state.paragraph.ignore;
-                this.state.paragraph.ignore = true;
-
-                var arg0 = this.getNormalArgument();
-                if(arg0 !== '*'){
-                    this.state.paragraph.ignore = ign;
-                    return [undefined, arg0];
-                }
-                var arg1 = this.getNormalArgument();
-                this.state.paragraphs.ignore = ign;
-
-                return [arg0, arg1];
-            },
+            args : '*N', //I used to have here temporarily setting this.state.paragraph.ignore to true. Why? FIXME
             inParagraph: false,
             fn : function(args){
                 this.state.pushSectionLabel(); //autoincrements section counter
 
-                return '<dt-section section-title="' + escapeString(args[1]) + '"' + (args[0] === '*' ? '' : ' number = "' + this.state.getCounterValue('section') + '"') + '<!--lbl:sec:' + this.state.getSectionString(0) + '-->></dt-section>';
+                return '<dt-section section-title="' + escapeString(args[1]) + '"' + (args[0] ? '' : ' number = "' + this.state.getCounterValue('section') + '"') + '<!--lbl:sec:' + this.state.getSectionString(0) + '-->></dt-section>';
             }
         },
 
         'subsection' : {
-            args : function(){
-                var ign = this.state.paragraph.ignore;
-                this.state.paragraph.ignore = true;
-
-                var arg0 = this.getNormalArgument();
-                if(arg0 !== '*'){
-                    this.state.paragraph.ignore = ign;
-                    return [undefined, arg0];
-                }
-                var arg1 = this.getNormalArgument();
-                this.state.paragraphs.ignore = ign;
-
-                return [arg0, arg1];
-            },
+            args : '*N', //I used to have here temporarily setting this.state.paragraph.ignore to true. Why? FIXME
             inParagraph: false,
             fn : function(args){
                 this.state.pushSubsectionLabel(); //autoincrementns subsection counter
-                return '<dt-subsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(1) + '-->></dt-subsection>';
+                return '<dt-subsection section-title="' + escapeString(args[1]) + '" ' + (args[0] ? '' : 'number = "' + this.state.getCounterValue('subsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(1) + '-->></dt-subsection>';
             }
         },
 
         'subsubsection' : {
-            args : function(){
-                var ign = this.state.paragraph.ignore;
-                this.state.paragraph.ignore = true;
-
-                var arg0 = this.getNormalArgument();
-                if(arg0 !== '*'){
-                    this.state.paragraph.ignore = ign;
-                    return [undefined, arg0];
-                }
-                var arg1 = this.getNormalArgument();
-                this.state.paragraphs.ignore = ign;
-
-                return [arg0, arg1];
-            },
+            args : '*N', //I used to have here temporarily setting this.state.paragraph.ignore to true. Why? FIXME
             inParagraph: false,
             fn : function(args){
                 this.state.pushSubsubsectionLabel(); //autoincrements subsubsection counter
-                return '<dt-subsubsection section-title="' + escapeString(args[1]) + '" ' + (args[0] === '*' ? '' : 'number = "' + this.state.getCounterValue('subsubsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(2) + '-->></dt-subsubsection>';
+                return '<dt-subsubsection section-title="' + escapeString(args[1]) + '" ' + (args[0] ? '' : 'number = "' + this.state.getCounterValue('subsubsection') + '"') + '<!--lbl:sec:' + this.state.getSectionString(2) + '-->></dt-subsubsection>';
             }
         },
 
@@ -499,22 +460,16 @@
 
         /* Line-breaking: (10) */
         '\\' : {
-            args : function(){
-                /* The asterisk tells LaTeX not to start a new page
-                 * on the PDF, so we ignore it. We don't even send
-                 * it to the command function.
-                 */
-                if(this.stream.peek() === '*'){
-                    this.getNormalArgument(); //ignore the asterisk
-                }
-
-                return [this.getOptionalArgument()];
-            },
+            /* The asterisk tells LaTeX not to start a new page
+             * on the PDF, so we ignore it. We don't even send
+             * it to the command function.
+             */
+            args : '*O',
             fn : function(args){
-                if(typeof(args[0]) === 'undefined'){
+                if(typeof(args[1]) === 'undefined'){
                     return '<br/>';
                 }
-                return '<div style="height:' + translateDistance(args[0]) + ';"></div>';
+                return '<div style="height:' + translateDistance(args[1]) + ';"></div>';
             }
         },
 
@@ -551,13 +506,7 @@
         'clearpage' : { args : '', fn : ignore('The "clearpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'newpage' : { args : '', fn : ignore('The "newpage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
         'enlargethispage' : {
-            args : function(){
-                if(this.stream.peek() === '*'){
-                    this.getNormalArgument(); //ignore the asterisk
-                }
-                this.getNormalArgument();
-                return [];
-            },
+            args : '*N',
             fn : ignore('The "enlargethispage" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.')
         },
         'pagebreak' : { args : 'O', fn : ignore('The "pagebreak" command is intentionally not supported by DiscoTeX. Consider wrapping this in an "ifdisco" command.') },
@@ -580,28 +529,7 @@
 
         /* Definitions (13) */ 
         'newcommand': {
-            args : function(){
-                var returnArgs = [];
-
-                this.state.commandVerbatim = true;
-                var arg0 = this.getNormalArgument();
-
-                if(arg0 === '*'){
-                    returnArgs.push('*');
-                    returnArgs.push(this.getNormalArgument());
-                }
-                else{
-                    returnArgs.push(undefined);
-                    returnArgs.push(arg0);
-                }
-                this.state.commandVerbatim = false;
-
-                returnArgs.push(this.getOptionalArgument());
-                returnArgs.push(this.getOptionalArgument());
-                returnArgs.push(this.getNormalArgument());
-
-                return returnArgs;
-            },
+            args : '*NOON',
             fn : function(args){
                 //Check if the command was already defined.
                 if(DT.hasCmd(args[1])){
@@ -613,28 +541,7 @@
             }
         },
         'renewcommand': {
-            args : function(){
-                var returnArgs = [];
-
-                this.state.commandVerbatim = true;
-                var arg0 = this.getNormalArgument();
-
-                if(arg0 === '*'){
-                    returnArgs.push('*');
-                    returnArgs.push(this.getNormalArgument());
-                }
-                else{
-                    returnArgs.push(undefined);
-                    returnArgs.push(arg0);
-                }
-                this.state.commandVerbatim = false;
-
-                returnArgs.push(this.getOptionalArgument());
-                returnArgs.push(this.getOptionalArgument());
-                returnArgs.push(this.getNormalArgument());
-
-                return returnArgs;
-            },
+            args : '*NOON',
             fn : function(args){
                 //Check if the command was already defined.
                 if(!DT.hasCmd(args[1])){
@@ -879,19 +786,13 @@
 
         /* Spaces (20) */
         'hspace' : {
-            args : function(){
-                /* The asterisk tells LaTeX not to start a new page
-                 * on the PDF, so we ignore it. We don't even send
-                 * it to the command function.
-                 */
-                if(this.stream.peek() === '*'){
-                    this.getNormalArgument(); //ignore the asterisk
-                }
-
-                return [this.getNormalArgument()];
-            },
+            /* The asterisk tells LaTeX not to start a new page
+             * on the PDF, so we ignore it. We don't even send
+             * it to the command function.
+             */
+            args : '*N',
             fn : function(args){
-                return '<span style="width:' + translateDistance(args[0]) + ';"></span>';
+                return '<span style="width:' + translateDistance(args[1]) + ';"></span>';
             }
         },
         'hfill' : '', //FIXME
@@ -919,19 +820,13 @@
         'smallskip' : '', //FIXME
         'vfill' : '', //FIXME
         'vspace' : {
-            args : function(){
-                /* The asterisk tells LaTeX not to start a new page
-                 * on the PDF, so we ignore it. We don't even send
-                 * it to the command function.
-                 */
-                if(this.stream.peek() === '*'){
-                    this.getNormalArgument(); //ignore the asterisk
-                }
-
-                return [this.getNormalArgument()];
-            },
+            /* The asterisk tells LaTeX not to start a new page
+             * on the PDF, so we ignore it. We don't even send
+             * it to the command function.
+             */
+            args : '*N',
             fn : function(args){
-                return '<span style="height:' + translateDistance(args[0]) + ';"></span>';
+                return '<span style="height:' + translateDistance(args[1]) + ';"></span>';
             }
         },
 
@@ -1267,7 +1162,7 @@
             }
         },
         //        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
-        //        //'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
+        'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
         'ifdisco' : { args : 'NN',
             fn : function(args){
                 //FIXME make it so the second parameter's errors are ignored

@@ -45,6 +45,15 @@
             return output;
         },
 
+        getOptionalAsterisk: function(){
+            var nextTk = this.stream.peek();
+            if(nextTk.token === '*'){
+                this.stream.next();
+                return true;
+            }
+            return false;
+        },
+
         getOptionalArgument: function(){
             var nextTk = this.stream.peek();
             if(nextTk.token === '['){
@@ -93,6 +102,9 @@
                 }
                 else if(argType === 'O' || argType === 'o'){
                     argList.push(this.getOptionalArgument());
+                }
+                else if(argType === '*'){
+                    argList.push(this.getOptionalAsterisk());
                 }
                 else{
                     /* If you're code gets to this section, the user did not provide an 'N' or an 'O'

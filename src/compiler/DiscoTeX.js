@@ -73,6 +73,14 @@
         return env;
     };
 
+    DT.hasEnv = function(tk){
+        return typeof(DT.Env[tk]) !== 'undefined';
+    };
+
+    DT.setEnv = function(tk, envData){
+        DT.Env[tk] = envData;
+    };
+
     DT.addPackage = function(pkg){
         for(cmd in pkg.Cmd){
             if(typeof(DT.Cmd[cmd]) !== 'undefined'){

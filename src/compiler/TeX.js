@@ -659,7 +659,63 @@
         },
         'newlength': '', //FIXME
         'newsavebox': '', //FIXME
-        'newenvironment': '', //FIXME
+        'newenvironment': {
+            args : function(){
+                var argList = [];
+                var arg0 = this.getNormalArgument();
+                argList.push(arg0 === '*' ? arg0 : undefined);
+                if(arg0 === '*'){
+                    arg0 = this.getNormalArgument();
+                }
+                argList.push(arg0);
+                argList.push(this.getOptionalArgument());
+                argList.push(this.getOptionalArgument());
+                argList.push(this.getNormalArgument());
+                argList.push(this.getNormalArgument());
+
+                return argList;
+            },
+            fn : function(args){
+                if(DT.hasEnv(args[1])){
+                    this.logError('The environment "' + args[1] + '" already exists. You cannot call "\\newenvironment" with "' + args[1] + '" as an argument.');
+                    return '';
+                }
+
+                if(DT.hasCmd(args[1])){
+                    this.logError('There is already a command named "' + args[1] + '". You cannot call "\\newenvironment with "' + args[1] + '" as an argument.');
+                    return '';
+                }
+
+                var myNewEnvironment = {};
+                if(typeof(args[2]) === 'undefined'){
+                    args[2] = 0;
+                }
+                var nargs = parseInt(args[2]);
+                for(var i = 1; i < nargs; ++i){
+                    myNewEnvironment.args += 'N';
+                }
+                myNewEnviroment.args = (typeof(args[3]) === 'undefined' && nargs > 0 ? 'N' : 'O') + myNewEnvironment.args;
+
+                myNewEnviroment.begin = function(eid, argums){
+                    var outputString = args[4];
+                    for(var i = 1; i < nargs; ++i){
+                        outputString = outputString.replace(new RegExp('#' + i, 'g'), argums[i - 1]);
+                    }
+
+                    if(typeof(args[3]) !== 'undefined' && typeof(argums[0]) === 'undefined'){
+                        outputString = outputString.replace(new RegExp('#1', 'g'), args[3]);
+                    }
+
+                    return outputString;
+                };
+
+                myNewEnviromnet.end = function(){
+                    return args[5];
+                }
+
+                DT.setEnv(env, myNewEnvironment)
+            }
+        },
         'renewenvironment': '', //FIXME
         'newtheorem': '', //FIXME
         'newfont': '', //FIXME

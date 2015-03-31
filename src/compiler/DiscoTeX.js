@@ -96,7 +96,7 @@
     };
 
     DT.Classes = {
-        'article' : '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">\n<!--DOCUMENT-->\n</div>\n</div>'
+        'article' : '<body ng-controller="DocumentController as doc">\n\n<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">\n<!--DOCUMENT-->\n</div>\n</div><script type="text/javascript">\nsetTimeout(function(){MathJax.Hub.Configured();},100);\n</script>\n</body>'
     };
 
 })(window.DiscoTeX = window.DiscoTeX || {});

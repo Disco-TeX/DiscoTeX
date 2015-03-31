@@ -465,16 +465,14 @@
                 this.state.documentClass= DT.classes['article'];
             }
 
-            var intermediateHTML = this.state.documentClass.replace('<!--DOCUMENT-->', parsedString);
-
-            var arr = intermediateHTML.split(/<!--([^ ][^>]*[^ ])-->/g);
-            var outputHTML = '';
+            var arr = parsedString.split(/<!--([^ ][^>]*[^ ])-->/g);
+            var intermediateHTML = '';
 
             var display = false;
             for(var i = 0; i < arr.length; ++i){
                 if(i % 2 === 0){
                     if(display){
-                        outputHTML += arr[i];
+                        intermediateHTML += arr[i];
                     }
                     continue;
                 }
@@ -486,24 +484,24 @@
                     display = true;
                 }
                 else if(display){
-                    if(arr[i] === 'TOC' && this.state.hasTOC){
-                        outputHTML += '<dt-sidebar></dt-sidebar>';
-                    }
-                    else if(arr[i].substr(0, 4) === 'lbl:'){
+                    if(arr[i].substr(0, 4) === 'lbl:'){
                         var lbl = this.state.labels[ arr[i].substr(4) ];
                         if(typeof(lbl) !== 'undefined'){
-                            outputHTML += ' label="' + lbl + '"';
+                            intermediateHTML += ' label="' + lbl + '"';
                         }
                     }
                     else if(arr[i].substr(0, 6) === 'envid:'){
                         //FIXME this substring maybe should be scrubbed?
                         var data = this.state.environmentData[parseInt(arr[i].substr(6))];
 
-                        outputHTML += data.attr.join(' ');
+                        intermediateHTML += data.attr.join(' ');
                         //FIXME we also need to deal with the pairs
                     }
                 }
             }
+
+            var outputHTML = this.state.documentClass.replace('<!--DOCUMENT-->', intermediateHTML);
+            outputHTML = outputHTML.replace('<!--TOC-->', this.state.hasTOC ? '<dt-sidebar></dt-sidebar>' : '');
 
             return this.tabify(outputHTML);
         },

@@ -1221,12 +1221,12 @@
             }
         },
 
-        'document' : { //THIS IS A MASSIVE HACK. FIXME. Move it to the document class
+        'document' : {
             begin: function(eid){
-                return this.setDisplay(true) + '<!--TOC-->\n<div class="col-md-6" role="main">\n<div class="dt-onecolumn">';
+                return this.setDisplay(true);
             },
             end: function(){
-                return '</div>\n</div>' + this.setDisplay(false);
+                return this.setDisplay(false);
             }
         },
 

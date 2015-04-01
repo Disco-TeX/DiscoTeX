@@ -84,7 +84,6 @@
         } };
     };
 
-
     var setVariable = function(varName){
         return { args : 'N', fn : function(args){
             this.state.vars[varName] = args[0];

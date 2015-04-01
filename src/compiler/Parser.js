@@ -45,6 +45,27 @@
             return output;
         },
 
+        getOptional: function(startToken, endToken){
+            //by default, the optional end tokens are [ and ]
+            //we need this generality, however because beamer
+            //wants < and >
+
+            var nextTk = this.stream.peek();
+            if(nextTk.token === startToken){
+                //option provided but we didn't consume the token
+                var opt = '';
+                while(nextTk.token !== endToken){
+                    nextTk = this.stream.next();
+                    opt += this.parseOne(nextTk, false);
+                }
+
+                return opt.slice(1, -1);
+            }
+            else{
+                return undefined;
+            }
+        },
+
         getOptionalAsterisk: function(){
             var nextTk = this.stream.peek();
             if(nextTk.token === '*'){
@@ -55,24 +76,7 @@
         },
 
         getOptionalArgument: function(){
-            var nextTk = this.stream.peek();
-            if(nextTk.token === '['){
-                //option provided but we didn't consume
-                //the '[', consume it now.
-
-                var opt = '';
-                while(nextTk.token !== ']'){
-                    nextTk = this.stream.next();
-                    opt += this.parseOne(nextTk, false);
-                }
-
-                //opt will always end with a ]
-                //slice off the last character
-                return opt.slice(1, -1);
-            }
-            else{
-                return undefined;
-            }
+            return this.getOptional('[', ']');
         },
 
         getNormalArgument: function(){
@@ -107,10 +111,10 @@
                     argList.push(this.getOptionalAsterisk());
                 }
                 else{
-                    /* If you're code gets to this section, the user did not provide an 'N' or an 'O'
-                     * for this argument option. We log the error in the console, because it's not a
-                     * problem with TeX, but with the provided package. As for error  recovery, we
-                     * supply this argument as the empty string.
+                    /* If you're code gets to this section, the user did not provide an 'N', an 'O',
+                     * or a '*' for this argument option. We log the error in the console, because
+                     * it's not a problem with TeX, but with the provided package. As for error
+                     * recovery, we supply this argument as the empty string.
                      */
                     console.error('Invalid argument type "' + argType + '" found in command named "' + cmdName + '".');
                     argList.push('');

@@ -33,13 +33,13 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
    <div class="col-md-6" role="main">
       <div class="dt-onecolumn">
          <dt-section section-title="Introduction" number = "0"></dt-section>
-         <p>This document is intended to test \(\mathrm{Disco\TeX}\)&rsquo;s functionality.
+         <p>This document is intended to test \(\mathrm{Disco\hspace{-1.7pt}\TeX}\)&rsquo;s functionality.
             The document is organized into sections corresponding to the type of functionality being tested.
             The original \(\mathrm{\TeX}\) file can be found <a href="test.html">here</a>.
             This document is not intended to be a stress-test, but rather a test of the everday-\(\mathrm{\TeX}\) that most users will write.</p>
-         <dt-section section-title="\(\mathrm{Disco\TeX}\)-specific commands" number = "0"></dt-section>
-         <p>This is a collection of commands provided by the \(\mathrm{Disco\TeX}\) package for \(\mathrm{\LaTeX}\).
-            The \(\mathrm{Disco\TeX}\) logo can be displayed with the command <code>\DiscoTeX</code>.
+         <dt-section section-title="\(\mathrm{Disco\hspace{-1.7pt}\TeX}\)-specific commands" number = "0"></dt-section>
+         <p>This is a collection of commands provided by the \(\mathrm{Disco\hspace{-1.7pt}\TeX}\) package for \(\mathrm{\LaTeX}\).
+            The \(\mathrm{Disco\hspace{-1.7pt}\TeX}\) logo can be displayed with the command <code>\DiscoTeX</code>.
             You can wrap sections of your code in the <code>\ifdisco</code> command.
             When compiling to HTML, this command will take the first argument, and ignore the second.
             When compiling to PDF, only the second argument will be displayed.
@@ -76,4 +76,5 @@ MathJax.Hub.Config({ extensions: ["tex2jax.js"], tex2jax: { processEnvironments:
       setTimeout(function(){MathJax.Hub.Configured();},100);
       </script>
    </body>
+
 </html>

@@ -1141,34 +1141,6 @@
             fn : function(args){
                 return '\\[' + args[0] + '\\]';
             }
-        },
-
-        /* These commands are not TeX or LaTeX standards
-         * They are provided by the DiscoTeX package.
-         */
-
-        'dtcollapse' : { args : '',
-            fn : function(){
-                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
-                return '';
-            }
-        },
-        'dtnocollapse' : '',
-        'dtstartcollapsed' : { args : '',
-            fn : function(){
-                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
-                return '';
-            }
-        },
-        //        'BibTeX' : '\\(\\mathrm{Bib\\TeX}\\)',
-        'DiscoTeX' : '\\(\\mathrm{Disco\\TeX}\\)',
-        'ifdisco' : { args : 'NN',
-            fn : function(args){
-                //FIXME make it so the second parameter's errors are ignored
-                //Maybe do this with a coroutine and suspending warning logs between the second parameter?
-                return args[0];
-            }
-
         }
     };
 

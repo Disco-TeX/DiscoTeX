@@ -47,7 +47,6 @@
         });
     };
 
-
     DT.getCmd = function(tk){
         var cmd = DT.Cmd[tk];
         if(typeof(cmd) === 'undefined'){

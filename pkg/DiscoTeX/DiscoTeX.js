@@ -10,23 +10,63 @@ DiscoTeX.addPackage({
             }
         },
 
-        'dtcollapse' : { args : '',
+        'dtcollapsible' : { args : '',
             fn : function(){
                 this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
                 return '';
             }
         },
 
-        'dtnocollapse' : '', //FIXME
-
-        'dtstartcollapsed' : { args : '',
+        'dtnocollapse' : { args : '',
             fn : function(){
-                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
                 return '';
             }
         },
+
+        'dtstartcollapsed' : { args : '',
+            fn : function(){
+                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'collapsible');
+                this.state.setEnvironmentData(this.state.getEnvironmentID(), 'start-collapsed');
+
+                return '';
+            }
+        },
+
+        /* Embed a youtube video.
+         * Parameters:
+         *  - * optional, turns on autoplay
+         *  - videoId
+         */
+        'dtyoutube' : { args : '*N',
+            inParagraph: false,
+            fn: function(args){
+                return '<iframe id="ytplayer" type="text/html" width="560" height="390" src="http://www.youtube.com/embed/' + args[1] + '?autoplay=' + (args[0] ? '1' : '0') + '" frameborder="0"></iframe>';
+            }
+        }
     },
     Env: {
+        /* FOR TESTING PURPOSES ONLY */
+        'proof': {
+            args: 'O',
+            begin: function(eid, args){
+                return '<dt-proof' + (typeof(args[0]) !== 'undefined' ? ' name="' + args[0] + '"' : '') + '<!--envid:' + eid + '-->>';
+            },
+
+            end: function(){
+                return '</dt-proof>';
+            }
+        },
+
+        'theorem': {
+            args: ['O'],
+            begin: function(eid, args){
+                return '<dt-theoremlike class="theorem"' + (typeof(args[0]) !== 'undefined' ? ' name="' + args[0] + '"' : '') + ' number="2" <!--envid:' + eid + '-->>';
+            },
+
+            end: function(){
+                return '</dt-theoremlike>';
+            }
+        }
     },
     Classes: {
     }

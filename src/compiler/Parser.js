@@ -497,6 +497,9 @@
                     else if(arr[i].substr(0, 6) === 'envid:'){
                         //FIXME this substring maybe should be scrubbed?
                         var data = this.state.environmentData[parseInt(arr[i].substr(6))];
+                        if(data.attr.length > 0){
+                            intermediateHTML += ' ';
+                        }
 
                         intermediateHTML += data.attr.join(' ');
                         //FIXME we also need to deal with the pairs

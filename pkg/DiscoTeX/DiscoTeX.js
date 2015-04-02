@@ -39,8 +39,15 @@ DiscoTeX.addPackage({
          */
         'dtyoutube' : { args : '*N',
             inParagraph: false,
-            fn: function(args){
+            fn : function(args){
                 return '<iframe id="ytplayer" type="text/html" width="560" height="390" src="http://www.youtube.com/embed/' + args[1] + '?autoplay=' + (args[0] ? '1' : '0') + '" frameborder="0"></iframe>';
+            }
+        },
+
+        'dttweet' : { args : 'NN',
+            inParagraph: false,
+            fn : function(args){
+                return '<iframe border=0 frameborder=0 height=250 width=550 src="http://twitframe.com/show?url=https%3A%2F%2Ftwitter.com%2F' +  + args[0] + '%2Fstatus%2F' + args[1] + '"></iframe>';
             }
         }
     },

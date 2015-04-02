@@ -1388,7 +1388,7 @@
         'verbatim' : {
             internalParagraphs: false,
             parse: function(eid, args, content){
-                return '<pre>' + content.replace(/&(?!(?:g|lt))/g, '&amp;').trim() + '</pre>';
+                return '<pre>' + content.trim() + '</pre>';
             }
         }
     };

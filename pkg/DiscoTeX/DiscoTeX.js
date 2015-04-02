@@ -45,6 +45,13 @@ DiscoTeX.addPackage({
         }
     },
     Env: {
+        'disco' : {
+            internalParagraphs: false,
+            parse: function(eid, args, content){
+                return '<!-- Begin disco environment -->\n' + content.replace(/&gt;/g,'>').replace(/&lt;/g,'<').trim() + '\n<!-- End disco environment -->';
+            }
+        },
+
         /* FOR TESTING PURPOSES ONLY */
         'proof': {
             args: 'O',
